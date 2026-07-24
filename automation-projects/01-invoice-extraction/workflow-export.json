@@ -1,0 +1,399 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "has:attachment subject:invoice"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1309a308-ba24-422b-9f70-ac3647591c70",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "qPSk115dvHbxBzcn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "document",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-flash-latest",
+          "mode": "list",
+          "cachedResultName": "models/gemini-flash-latest"
+        },
+        "text": "Extract the following fields from this invoice and return ONLY valid JSON, no other text, no markdown formatting, no explanation:\n\n{\n  \"vendor\": \"string - the company issuing the invoice\",\n  \"invoice_date\": \"string - format YYYY-MM-DD\",\n  \"currency\": \"string - e.g. USD, EUR, NGN\",\n  \"line_items\": [\n    { \"description\": \"string\", \"quantity\": number, \"unit_price\": number, \"line_total\": number }\n  ],\n  \"vat_amount\": \"number - 0 if not present\",\n  \"total\": \"number - the final invoice total\"\n}\n\nIf any field is missing or unreadable, use null for that field. Do not guess values you cannot see in the document.",
+        "inputType": "binary",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "9b3f1753-bdf6-48ee-933e-626a608c2d66",
+      "name": "Analyze document",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "M0YhZnoxRErxJvf3",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the raw text Gemini returned\nconst rawText = $input.first().json.content.parts[0].text;\n// Gemini sometimes wraps JSON in ```json fences - strip those if present\nconst cleaned = rawText.replace(/```json\\n?/g, '').replace(/```/g, '').trim();\n// Parse the string into a real JSON object\nlet invoice;\ntry {\n  invoice = JSON.parse(cleaned);\n} catch (error) {\n  // If parsing fails entirely, flag it for manual review\n  return [{\n    json: {\n      needs_review: true,\n      review_reason: \"Could not parse AI output as JSON\",\n      raw_output: rawText\n    }\n  }];\n}\n// Calculate the sum of line items to check against the stated total\nlet calculatedTotal = 0;\nlet hasNullLineItem = false;\nfor (const item of invoice.line_items || []) {\n  if (item.line_total === null || item.line_total === undefined) {\n    hasNullLineItem = true;\n  } else {\n    calculatedTotal += Number(item.line_total);\n  }\n}\n// Add VAT/tax on top of line items before comparing to stated total\nconst vat = invoice.vat_amount !== null ? Number(invoice.vat_amount) : 0;\ncalculatedTotal = Math.round((calculatedTotal + vat) * 100) / 100;\nconst statedTotal = invoice.total !== null ? Number(invoice.total) : null;\n// Decide if this invoice needs human review\nlet needsReview = false;\nlet reviewReason = \"\";\nif (statedTotal === null) {\n  needsReview = true;\n  reviewReason = \"No total found on invoice\";\n} else if (hasNullLineItem) {\n  needsReview = true;\n  reviewReason = \"One or more line items missing values\";\n} else if (Math.abs(calculatedTotal - statedTotal) > 0.05) {\n  needsReview = true;\n  reviewReason = `Line items sum to ${calculatedTotal} but stated total is ${statedTotal}`;\n}\n// Return the clean, validated result\nreturn [{\n  json: {\n    vendor: invoice.vendor,\n    invoice_date: invoice.invoice_date,\n    currency: invoice.currency,\n    line_items: invoice.line_items,\n    vat_amount: invoice.vat_amount,\n    total: invoice.total,\n    calculated_total: calculatedTotal,\n    needs_review: needsReview,\n    review_reason: reviewReason\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "474d313d-360d-4ac4-b662-7b28a947e762",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "2c9648d6-adde-4197-ac72-5db0d4c73e16",
+              "leftValue": "={{ $json.needs_review }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        624,
+        0
+      ],
+      "id": "4403c884-f2bd-4b63-a534-81172e5510ed",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SHEET_ID_HERE",
+          "mode": "list",
+          "cachedResultName": "Invoice%20Pipeline",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TYFy_qeu1GrQEixJtz6jf_uUn2d0_7lTNQX1j3NkBB4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1539433782,
+          "mode": "list",
+          "cachedResultName": "Books",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TYFy_qeu1GrQEixJtz6jf_uUn2d0_7lTNQX1j3NkBB4/edit#gid=1539433782"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "currency": "={{ $json.currency }}",
+            "vendor": "={{ $json.vendor }}",
+            "invoice_date": "={{ $json.invoice_date }}",
+            "total": "={{ $json.total }}",
+            "vat_amount": "={{ $json.vat_amount }}",
+            "calculated_total": "={{ $json.calculated_total }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "vendor",
+              "displayName": "vendor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "invoice_date",
+              "displayName": "invoice_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total",
+              "displayName": "total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vat_amount",
+              "displayName": "vat_amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "calculated_total",
+              "displayName": "calculated_total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        832,
+        96
+      ],
+      "id": "e7eb6592-f8ea-4fb5-b6f6-b32750671acd",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vcM9EnJgv8ephU1m",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SHEET_ID_HERE",
+          "mode": "list",
+          "cachedResultName": "Invoice%20Pipeline",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TYFy_qeu1GrQEixJtz6jf_uUn2d0_7lTNQX1j3NkBB4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 514877745,
+          "mode": "list",
+          "cachedResultName": "Review Queue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TYFy_qeu1GrQEixJtz6jf_uUn2d0_7lTNQX1j3NkBB4/edit#gid=514877745"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "review_reason": "={{ $('Code in JavaScript').item.json.review_reason }}",
+            "vendor": "={{ $('Code in JavaScript').item.json.vendor }}",
+            "invoice_date": "={{ $('Code in JavaScript').item.json.invoice_date }}",
+            "currency": "={{ $('Code in JavaScript').item.json.currency }}",
+            "total": "={{ $('Code in JavaScript').item.json.total }}",
+            "vat_amount": "={{ $('Code in JavaScript').item.json.vat_amount }}",
+            "calculated_total": "={{ $('Code in JavaScript').item.json.calculated_total }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "vendor",
+              "displayName": "vendor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "invoice_date",
+              "displayName": "invoice_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total",
+              "displayName": "total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vat_amount",
+              "displayName": "vat_amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "calculated_total",
+              "displayName": "calculated_total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "review_reason",
+              "displayName": "review_reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        720,
+        208
+      ],
+      "id": "0bde4061-abbf-42f7-9b1f-3caea903f00e",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vcM9EnJgv8ephU1m",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Analyze document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze document": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a4ee8d52-1d77-473c-b391-e0ec538992b8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "17fb194e1a62b94ff7fc4b0b96abcfc96817f608d49b85f0e77bdec96a00497c"
+  },
+  "nodeGroups": [],
+  "id": "6GSC4xecZPBqXoly",
+  "tags": []
+}
