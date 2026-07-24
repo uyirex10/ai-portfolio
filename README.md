@@ -49,5 +49,5 @@ Every project folder includes:
 
 ## Connect
 
-- Building in public on X: https://x.com/UyiOdemwing
+- Building in public on X: https://x.com/UyiOdemwingie
 - Open to freelance/collaboration opportunities in AI automation and applied AI engineering
