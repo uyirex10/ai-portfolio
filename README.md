@@ -6,7 +6,7 @@ This repo tracks two parallel tracks of hands-on, real-world project builds. Eac
 
 ## Why this repo exists
 
-I'm learning by building, not by watching. Every project here was built end-to-end — architecture, implementation, testing on real or realistic data, and documentation — before moving to the next one. The goal is a portfolio that proves capability, not just familiarity.
+I'm learning by building, not by watching. Every project here was built end-to-end — architecture, implementation, testing on real or realistic data, and documentation, before moving to the next one. The goal is a portfolio that proves capability, not just familiarity.
 
 ## Tracks
 
