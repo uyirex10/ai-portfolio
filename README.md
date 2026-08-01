@@ -6,7 +6,7 @@ This repo tracks two parallel tracks of hands-on, real-world project builds. Eac
 
 ## Why this repo exists
 
-I'm learning by building, not by watching. Every project here was built end-to-end — architecture, implementation, testing on real or realistic data, and documentation, before moving to the next one. The goal is a portfolio that proves capability, not just familiarity.
+I'm learning by building, not by watching. Every project here was built end-to-end — architecture, implementation, testing on real or realistic data, and documentation — before moving to the next one. The goal is a portfolio that proves capability, not just familiarity.
 
 ## Tracks
 
@@ -16,7 +16,7 @@ Workflow automation, data pipelines, and AI-powered business tooling, mostly bui
 | # | Project | Status | Summary |
 |---|---------|--------|---------|
 | 1 | [Invoice Extraction Pipeline](./automation-projects/01-invoice-extraction) | ✅ Done | Gmail trigger → Gemini vision extraction → validation (line items + VAT vs. total) → Google Sheets logging. Tested on 13 real invoices. |
-| 2 | | 🔲 Not started | |
+| 2 | [CRM Lead Routing and Data Sync Hub](./automation-projects/02-crm-lead-routing-hub) | ✅ Done | Three lead sources (webhook, Airtable, Google Sheets) normalized, deduplicated, cleaned with Gemini, scored Hot/Warm/Junk, and routed to HubSpot and Slack. Includes retry logic, a dead-letter queue, and a scheduled Slack digest for failures. |
 | 3 | | 🔲 Not started | |
 | 4 | | 🔲 Not started | |
 | 5 | | 🔲 Not started | |
