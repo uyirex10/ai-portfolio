@@ -1,0 +1,50 @@
+{
+  "_note": "Synthetic example payloads only. Shapes match the raw JSON body this workflow's webhook expects. Each entry includes the expected outcome for reference.",
+  "examples": [
+    {
+      "description": "Raw lead before AI cleanup, phone in a messy local format and no company field. Should trigger the Gemini cleanup step (needs_cleanup: true).",
+      "payload": {
+        "name": "Amaka Obi",
+        "email": "amaka.obi@example.com",
+        "phone": "0803 555 1212",
+        "message": "Interested in a bulk quote for fabric"
+      },
+      "expected_result": {
+        "needs_cleanup": true,
+        "cleaned_phone": "+2348035551212",
+        "cleaned_company": null,
+        "tier": "Warm"
+      }
+    },
+    {
+      "description": "Already-clean lead with strong buying intent, a real company, and a valid phone number. Should skip Gemini entirely and score Hot.",
+      "payload": {
+        "name": "Tari Fubara",
+        "email": "tari.fubara@example.com",
+        "phone": "+2348012345678",
+        "company": "Zenoxa Logistics",
+        "message": "Interested in a bulk quote for pricing, please send a quote"
+      },
+      "expected_result": {
+        "needs_cleanup": false,
+        "tier": "Hot",
+        "routed_to": ["HubSpot", "Slack"]
+      }
+    },
+    {
+      "description": "Company present but no buying-intent language and no phone. Should score Warm, HubSpot only, no Slack alert.",
+      "payload": {
+        "name": "Chidi Okoro",
+        "email": "chidi.okoro@example.com",
+        "phone": "",
+        "company": "Okoro Ventures",
+        "message": "just browsing your site, looks interesting"
+      },
+      "expected_result": {
+        "needs_cleanup": true,
+        "tier": "Warm",
+        "routed_to": ["HubSpot"]
+      }
+    }
+  ]
+}
