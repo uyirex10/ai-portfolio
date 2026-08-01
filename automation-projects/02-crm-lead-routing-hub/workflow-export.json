@@ -1,0 +1,1349 @@
+{
+  "name": "Project 2 - CRM Lead Routing Hub",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        2240,
+        736
+      ],
+      "id": "3319b8dc-a40c-46b6-8f3b-f194bd665a87",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "authentication": "appToken",
+        "email": "REDACTED_EMAIL",
+        "additionalFields": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.2,
+      "position": [
+        1616,
+        448
+      ],
+      "id": "2c4227bb-4dd7-47f3-98df-7c48461adf58",
+      "name": "Create or update a contact",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "hubspotAppToken": {
+          "id": "2TzTll0UVQqkRAaq",
+          "name": "HubSpot account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "REDACTED_AIRTABLE_BASE_ID",
+          "mode": "list",
+          "cachedResultName": "Lead Intake",
+          "cachedResultUrl": "https://airtable.com/REDACTED_AIRTABLE_BASE_ID"
+        },
+        "table": {
+          "__rl": true,
+          "value": "REDACTED_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://airtable.com/REDACTED_AIRTABLE_BASE_ID/REDACTED_AIRTABLE_TABLE_ID"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Code in JavaScript').item.json.name }}",
+            "Email": "={{ $('Code in JavaScript').item.json.email }}",
+            "Phone": "={{ $('Code in JavaScript').item.json.phone }}",
+            "Company": "={{ $('Code in JavaScript').item.json.company }}",
+            "Message": "={{ $('Code in JavaScript').item.json.message }}",
+            "Source": "={{ $('Code in JavaScript').item.json.source }}",
+            "Received At": "={{ $('Code in JavaScript').item.json.received_at }}",
+            "Tier": "={{ $json.tier }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Web Form",
+                  "value": "Web Form"
+                },
+                {
+                  "name": "Airtable",
+                  "value": "Airtable"
+                },
+                {
+                  "name": "sheet",
+                  "value": "sheet"
+                },
+                {
+                  "name": "web_form",
+                  "value": "web_form"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Received At",
+              "displayName": "Received At",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Created",
+              "displayName": "Created",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Tier",
+              "displayName": "Tier",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Hot",
+                  "value": "Hot"
+                },
+                {
+                  "name": "Warm",
+                  "value": "Warm"
+                },
+                {
+                  "name": "Junk",
+                  "value": "Junk"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1136,
+        320
+      ],
+      "id": "407bd93e-83aa-45e6-b039-bb7515554399",
+      "name": "Create a record",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "qjrHGffz6eYZni93",
+          "name": "Airtable Personal Access Token account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BKVG5EQLT",
+          "mode": "list",
+          "cachedResultName": "lead-alerts"
+        },
+        "text": "=🔥 New Hot Lead: {{ $('Code in JavaScript1').item.json.name }} Company: {{ $('Code in JavaScript1').item.json.company }} Phone: {{ $('Code in JavaScript1').item.json.phone }} Message: {{ $('Code in JavaScript1').item.json.message }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        1888,
+        240
+      ],
+      "id": "963fbaa5-ef93-426e-bbf3-6f18394179eb",
+      "name": "Send a message",
+      "webhookId": "c923b18b-e6e3-4fa9-a481-b456359c8f78",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "slackApi": {
+          "id": "Poaw4VOoD8J3flRq",
+          "name": "Slack account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-web-form",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        160,
+        -160
+      ],
+      "id": "2590f2f9-8cd9-411e-878d-22ac51c486eb",
+      "name": "Webhook",
+      "webhookId": "7423c0a0-9946-463b-b2e4-9c47a2032701"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "authentication": "airtableTokenApi",
+        "baseId": {
+          "__rl": true,
+          "value": "REDACTED_AIRTABLE_BASE_ID",
+          "mode": "id"
+        },
+        "tableId": {
+          "__rl": true,
+          "value": "REDACTED_AIRTABLE_TABLE_ID",
+          "mode": "id"
+        },
+        "triggerField": "Created",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.airtableTrigger",
+      "typeVersion": 1,
+      "position": [
+        160,
+        16
+      ],
+      "id": "a6d7a0a3-3635-432e-9eb7-7f61c2c03ce5",
+      "name": "Airtable Trigger",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "qjrHGffz6eYZni93",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "REDACTED_GSHEET_DOC_ID",
+          "mode": "list",
+          "cachedResultName": "Invoice%20Pipeline",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/REDACTED_GSHEET_DOC_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 817947637,
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/REDACTED_GSHEET_DOC_ID/edit#gid=817947637"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        160,
+        208
+      ],
+      "id": "f52e4c44-0ed8-45c2-90ef-17de3ac8c7f0",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "2i9r9CxCtprkQQyW",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7718b37e-eebc-48c1-9ed7-e3f908fe2966",
+              "name": "=name",
+              "value": "={{$json.body.name}}",
+              "type": "string"
+            },
+            {
+              "id": "812323ef-b4b1-4c06-82a7-8e4f539d31b7",
+              "name": "=email",
+              "value": "={{$json.body.email}}",
+              "type": "string"
+            },
+            {
+              "id": "2010dbc0-46fe-4679-b16e-7bc171a91399",
+              "name": "=phone",
+              "value": "={{$json.body.phone}}",
+              "type": "string"
+            },
+            {
+              "id": "c1d5cc06-34e7-4744-ac92-b6088d64abf5",
+              "name": "=message",
+              "value": "={{$json.body.message}}",
+              "type": "string"
+            },
+            {
+              "id": "e3ca7655-9aff-4818-a7c5-f8897c5fbd06",
+              "name": "source",
+              "value": "web_form",
+              "type": "string"
+            },
+            {
+              "id": "4c2c0d57-8171-4a16-bf66-4249baf26dd1",
+              "name": "=received_at",
+              "value": "={{$now.toISO()}}",
+              "type": "string"
+            },
+            {
+              "id": "11cd521a-e051-46b8-9310-3f5348c071ab",
+              "name": "=company",
+              "value": "={{$json.body.company}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        -160
+      ],
+      "id": "d890ed84-53e6-49f8-bba0-6d6ce64f0462",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1dd89eff-1b88-4b88-999c-18aa6926e57f",
+              "name": "=name",
+              "value": "={{$json.fields.Name}}",
+              "type": "string"
+            },
+            {
+              "id": "ecb9aa27-9688-4948-9653-41fb289e822d",
+              "name": "email",
+              "value": "={{ $json.fields.Email }}",
+              "type": "string"
+            },
+            {
+              "id": "74165220-d1cd-41be-a277-7de2a99fc389",
+              "name": "=phone ",
+              "value": "={{$json.fields.Phone}}",
+              "type": "string"
+            },
+            {
+              "id": "f14eec68-9b86-48eb-a957-6f5a3f2e98d7",
+              "name": "=company",
+              "value": "={{$json.fields.Company}}",
+              "type": "string"
+            },
+            {
+              "id": "032c8895-0e11-4f0c-9461-86b83876543c",
+              "name": "=message",
+              "value": "={{$json.fields.Message}}",
+              "type": "string"
+            },
+            {
+              "id": "07c52984-a2ae-4254-81cd-58043d5ae8fd",
+              "name": "source",
+              "value": "=airtable",
+              "type": "string"
+            },
+            {
+              "id": "dcaacead-f613-4ea9-a503-37ad05aacee9",
+              "name": "=received_at",
+              "value": "={{$json.createdTime}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        16
+      ],
+      "id": "92131f13-7cca-4ab7-9a75-b7057f723e20",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "251e2ef2-0392-4092-a547-3965b6684711",
+              "name": "=name",
+              "value": "={{$json.Name}}",
+              "type": "string"
+            },
+            {
+              "id": "5d791500-5f4a-4b61-86ca-76a04bb0538f",
+              "name": "=email",
+              "value": "={{$json.Email}}",
+              "type": "string"
+            },
+            {
+              "id": "59257c3c-caba-414e-925c-c2272450a6d0",
+              "name": "=phone",
+              "value": "={{$json.Phone}}",
+              "type": "string"
+            },
+            {
+              "id": "bf604743-ffdb-4f89-b49a-8d5f570eb872",
+              "name": "=company",
+              "value": "={{$json.Company}}",
+              "type": "string"
+            },
+            {
+              "id": "d8828689-d7a4-437c-b696-0778a534ba52",
+              "name": "=message",
+              "value": "={{$json.Message}}",
+              "type": "string"
+            },
+            {
+              "id": "df7dcd20-f2f5-4e1c-965f-fc7e527e4823",
+              "name": "=received_at",
+              "value": "={{$now.toISO()}}",
+              "type": "string"
+            },
+            {
+              "id": "3b5ab4bd-0a83-4146-a857-bf59a58fb515",
+              "name": "source",
+              "value": "sheet",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        208
+      ],
+      "id": "49280821-7f0d-4568-b894-c1f084a90876",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const item = $input.item.json;\n\nconst phoneLooksClean = /^\\+\\d{10,15}$/.test((item.phone || '').replace(/[\\s-]/g, ''));\nconst companyLooksClean = !!(item.company && item.company.trim().length > 0);\n\nitem.needs_cleanup = !(phoneLooksClean && companyLooksClean);\n\nreturn item;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        752,
+        16
+      ],
+      "id": "acf13da5-abf3-42f4-a0b8-b62ab1e98800",
+      "name": "Needs Cleanup Check"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "74b70742-b2ae-4747-9327-0d00a6fc10c3",
+              "leftValue": "={{ $json.needs_cleanup }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        960,
+        16
+      ],
+      "id": "d770f544-a323-4272-ad74-a32d9cfc3f1a",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-flash-latest",
+          "mode": "list",
+          "cachedResultName": "models/gemini-flash-latest"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are cleaning contact data for a CRM. You are given a phone number, a company name (which may be blank), and a free text message.\n\n1. Normalize the phone number to E.164 format. If no country code is given, assume Nigeria (+234). If the phone is missing or unusable, return null.\n2. If the company field is blank, check the message for a company name and extract it. If the company field already has a value, keep it as is. If nothing can be found, return null.\n\nPhone: {{ $json.phone }}\nCompany: {{ $json.company }}\nMessage: {{ $json.message }}\n\nReturn only valid JSON with exactly these two keys: phone, company. No explanation, no extra text."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        1152,
+        -144
+      ],
+      "id": "689eb401-c4ba-40b4-b05f-811ffdec8e09",
+      "name": "Message a model",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Ds8Vnb2A65deVYih",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const original = $('If').item.json;\n\nif (!original.needs_cleanup) {\n  original.cleanup_status = 'skipped_already_clean';\n  return original;\n}\n\nconst raw = $json.content.parts[0].text;\n\nlet cleaned;\ntry {\n  cleaned = JSON.parse(raw);\n  original.phone = cleaned.phone || original.phone;\n  original.company = cleaned.company || original.company;\n  original.cleanup_status = 'success';\n} catch (e) {\n  original.cleanup_status = 'failed_fallback_to_raw';\n}\n\nreturn original;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        32
+      ],
+      "id": "593caf28-a756-4f3a-9690-a38e0fac7582",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "REDACTED_AIRTABLE_BASE_ID",
+          "mode": "list",
+          "cachedResultName": "Lead Intake",
+          "cachedResultUrl": "https://airtable.com/REDACTED_AIRTABLE_BASE_ID"
+        },
+        "table": {
+          "__rl": true,
+          "value": "REDACTED_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://airtable.com/REDACTED_AIRTABLE_BASE_ID/REDACTED_AIRTABLE_TABLE_ID"
+        },
+        "filterByFormula": "={Email} = '{{ $json.email }}'",
+        "returnAll": false,
+        "limit": 1,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1648,
+        32
+      ],
+      "id": "f4613aaa-d3a5-41da-92cf-59d2d66dc2db",
+      "name": "Search records",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "qjrHGffz6eYZni93",
+          "name": "Airtable Personal Access Token account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "29075377-6db8-4311-a399-05be2268f750",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        720,
+        256
+      ],
+      "id": "c6454204-317c-4b55-9205-9a4e6a518e75",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const item = $('Code in JavaScript').item.json;\n\nconst buyingIntentWords = ['quote', 'price', 'pricing', 'buy', 'order', 'purchase', 'bulk'];\nconst messageLower = (item.message || '').toLowerCase();\nconst hasIntent = buyingIntentWords.some(word => messageLower.includes(word));\n\nlet score = 0;\nif (hasIntent) score += 2;\nif (item.company) score += 1;\nif (/^\\+\\d{10,15}$/.test((item.phone || '').replace(/[\\s-]/g, ''))) score += 1;\n\nlet tier;\nif (score >= 3) tier = 'Hot';\nelse if (score >= 1) tier = 'Warm';\nelse tier = 'Junk';\n\nitem.lead_score = score;\nitem.tier = tier;\n\nreturn item;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        944,
+        320
+      ],
+      "id": "97f88bf8-1fc9-4301-aa71-e23d8cfef129",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Code in JavaScript1').item.json.tier }}",
+                    "rightValue": "Hot",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "3d1a8cfd-2ba0-4026-b479-bbb68df82a9a"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Hot"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "257d1c44-863f-470f-8bde-ac94f98937dd",
+                    "leftValue": "={{ $('Code in JavaScript1').item.json.tier }}",
+                    "rightValue": "Warm",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Warm"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "1333789a-2630-46ef-8da8-d63e4ba7ab81",
+                    "leftValue": "={{ $('Code in JavaScript1').item.json.tier }}",
+                    "rightValue": "Junk",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Junk"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1392,
+        320
+      ],
+      "id": "4663d336-86a2-4d38-9537-37facf8623e6",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "authentication": "appToken",
+        "email": "={{ $('Code in JavaScript1').item.json.email }}",
+        "additionalFields": {
+          "companyName": "={{ $('Code in JavaScript1').item.json.company }}",
+          "firstName": "={{ $('Code in JavaScript1').item.json.name }}",
+          "phoneNumber": "={{ $('Code in JavaScript1').item.json.phone }}"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.2,
+      "position": [
+        1616,
+        256
+      ],
+      "id": "19833bbd-d948-420b-8689-c103d3f8df20",
+      "name": "Create or update a contact1",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "hubspotAppToken": {
+          "id": "2TzTll0UVQqkRAaq",
+          "name": "HubSpot account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const item = $input.item.json;\n\nreturn {\n  failed_at: new Date().toISOString(),\n  node_name: $prevNode.name,\n  lead_email: item.email || item.body?.email || 'unknown',\n  error_message: item.error?.message || JSON.stringify(item).slice(0, 200),\n  raw_data: JSON.stringify(item)\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        -192
+      ],
+      "id": "c539d8ef-d3d3-4728-b276-32cc1026fe13",
+      "name": "Format Error"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "REDACTED_GSHEET_DOC_ID",
+          "mode": "list",
+          "cachedResultName": "Invoice%20Pipeline",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/REDACTED_GSHEET_DOC_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1126532252,
+          "mode": "list",
+          "cachedResultName": "Dead Letter Queue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/REDACTED_GSHEET_DOC_ID/edit#gid=1126532252"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Failed At": "={{ $json.failed_at }}",
+            "Node Name": "={{ $json.node_name }}",
+            "Lead Email": "={{ $json.lead_email }}",
+            "Error Message": "={{ $json.error_message }}",
+            "Raw Data": "={{ $json.raw_data }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Failed At",
+              "displayName": "Failed At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Node Name",
+              "displayName": "Node Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Lead Email",
+              "displayName": "Lead Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Error Message",
+              "displayName": "Error Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Raw Data",
+              "displayName": "Raw Data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2208,
+        -192
+      ],
+      "id": "7ba87c10-6a91-4695-a860-9a2a6ac733c0",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vcM9EnJgv8ephU1m",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        400,
+        576
+      ],
+      "id": "9ad65cba-aa24-4522-b8d7-7613568653d9",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "REDACTED_GSHEET_DOC_ID",
+          "mode": "list",
+          "cachedResultName": "Invoice%20Pipeline",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/REDACTED_GSHEET_DOC_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1126532252,
+          "mode": "list",
+          "cachedResultName": "Dead Letter Queue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/REDACTED_GSHEET_DOC_ID/edit#gid=1126532252"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        624,
+        576
+      ],
+      "id": "97b36512-1adc-4e7c-acec-e7bcd197c8cb",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vcM9EnJgv8ephU1m",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all().map(i => i.json);\nconst oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);\n\nconst recent = rows.filter(row => new Date(row['Failed At']) > oneDayAgo);\n\nconst byNode = {};\nfor (const row of recent) {\n  const node = row['Node Name'];\n  byNode[node] = (byNode[node] || 0) + 1;\n}\n\nconst summaryLines = Object.entries(byNode)\n  .map(([node, count]) => `- ${node}: ${count}`)\n  .join('\\n');\n\nreturn {\n  total_failures: recent.length,\n  summary_text: recent.length > 0\n    ? `⚠️ ${recent.length} failure(s) in the last 24h:\\n${summaryLines}`\n    : '✅ No failures in the last 24h.'\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        832,
+        576
+      ],
+      "id": "02f3bcbe-6f7d-40cc-947c-3ec02a33324b",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BKLCJNQLX",
+          "mode": "list",
+          "cachedResultName": "automation-digest"
+        },
+        "text": "={{ $json.summary_text }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        1040,
+        576
+      ],
+      "id": "572259db-3616-4763-86fc-113188cc778d",
+      "name": "Send a message1",
+      "webhookId": "385b785f-2b0e-4cba-a21a-fc346a1524f4",
+      "credentials": {
+        "slackApi": {
+          "id": "Poaw4VOoD8J3flRq",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        []
+      ]
+    },
+    "Create or update a contact": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Format Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Needs Cleanup Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Needs Cleanup Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Needs Cleanup Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Needs Cleanup Check": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Create or update a contact1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create or update a contact",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Create or update a contact1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Format Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Error": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "bedbd477-7579-4e96-86ae-e634c829395f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "17fb194e1a62b94ff7fc4b0b96abcfc96817f608d49b85f0e77bdec96a00497c"
+  },
+  "nodeGroups": [],
+  "id": "nGpMwg33QQ6E4K5x",
+  "tags": []
+}
