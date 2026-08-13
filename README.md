@@ -27,16 +27,16 @@ Workflow automation, data pipelines, and AI-powered business tooling, mostly bui
 | 10 | | 🔲 Not started | |
 
 ### AI Engineering
-Applied AI/ML projects across automotive, manufacturing, robotics, and medical device domains — leaning on my mechanical engineering background. Coming soon.
+Applied AI/ML systems: RAG, agents, and evaluation-driven engineering, built end-to-end against real data with hand-verified eval methodology, not just demos.
 
 | # | Project | Status | Summary |
 |---|---------|--------|---------|
-| 1 | | 🔲 Not started | |
+| 1 | [Internal Knowledge Assistant: RAG Done Properly](./engineering-projects/01-internal-knowledge-assistant) | ✅ Done | Grounded document QA over 60 real legal contracts with page-level citations. Naive baseline evolved through hand-verified eval methodology, reranking, and structure-aware chunking to 86% retrieval hit rate and zero hallucinated answers, up from 70%/98% naive. Two-layer refusal design, hybrid search evaluated and rejected with real evidence, served via FastAPI and Streamlit. |
 
 ## Tech stack
 
 - **Automation:** n8n (local, no Docker, via nvm-windows), Python, Gemini API, Google Workspace APIs
-- **Engineering:** Python, FastAPI, LangChain (planned)
+- **Engineering:** Python, FastAPI, Streamlit, Qdrant, Gemini API, Cohere.
 - **Other:** Git/GitHub, JSON workflow exports for reproducibility
 
 ## How each project is documented
