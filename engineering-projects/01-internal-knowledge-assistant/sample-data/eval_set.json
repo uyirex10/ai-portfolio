@@ -1,0 +1,565 @@
+[
+  {
+    "id": 1,
+    "document": "HealthGate",
+    "source_file": "HEALTHGATEDATACORP_11_24_1999-EX-10.1-HOSTING AND MANAGEMENT AGREEMENT - Escrow Agreement.pdf",
+    "type": "easy",
+    "question": "Who is named as the escrow agent in the Escrow Agreement, and what is its registered office?",
+    "expected_answer": "NCC Escrow International Limited, registered office at Oxford House, Oxford Road, Manchester M1 7ED, England (CRN: 3081952).",
+    "expected_pages": [
+      4
+    ]
+  },
+  {
+    "id": 2,
+    "document": "HealthGate",
+    "source_file": "HEALTHGATEDATACORP_11_24_1999-EX-10.1-HOSTING AND MANAGEMENT AGREEMENT - Escrow Agreement.pdf",
+    "type": "easy",
+    "question": "What is the name of the software package to be placed in escrow under Schedule 4?",
+    "expected_answer": "\"HealthGate Electronic Journal Proprietary Software.\"",
+    "expected_pages": [
+      2
+    ]
+  },
+  {
+    "id": 3,
+    "document": "HealthGate",
+    "source_file": "HEALTHGATEDATACORP_11_24_1999-EX-10.1-HOSTING AND MANAGEMENT AGREEMENT - Escrow Agreement.pdf",
+    "type": "easy",
+    "question": "Within how many days of the date of the Escrow Agreement must the Owner make its first delivery of the Material to NCC?",
+    "expected_answer": "Within 30 days of the date of the Agreement (Clause 2.1.1).",
+    "expected_pages": [
+      4
+    ]
+  },
+  {
+    "id": 4,
+    "document": "HealthGate",
+    "source_file": "HEALTHGATEDATACORP_11_24_1999-EX-10.1-HOSTING AND MANAGEMENT AGREEMENT - Escrow Agreement.pdf",
+    "type": "easy",
+    "question": "What is NCC's maximum total liability for loss of or damage to the Material under the standard limitation?",
+    "expected_answer": "£500,000 (except for claims of personal injury or death) — Clause 10.1.",
+    "expected_pages": [
+      7
+    ]
+  },
+  {
+    "id": 5,
+    "document": "HealthGate",
+    "source_file": "HEALTHGATEDATACORP_11_24_1999-EX-10.1-HOSTING AND MANAGEMENT AGREEMENT - Escrow Agreement.pdf",
+    "type": "easy",
+    "question": "Under what law is the Escrow Agreement governed?",
+    "expected_answer": "The laws of England and Wales (Clause 13.1).",
+    "expected_pages": [
+      8
+    ]
+  },
+  {
+    "id": 6,
+    "document": "HealthGate",
+    "source_file": "HEALTHGATEDATACORP_11_24_1999-EX-10.1-HOSTING AND MANAGEMENT AGREEMENT - Escrow Agreement.pdf",
+    "type": "easy",
+    "question": "How is the arbitration panel for a Clause 5.1.5 dispute composed?",
+    "expected_answer": "Three arbitrators: the Owner and the Licensee each appoint one member, and the third member (chairman) is appointed by the President of the International Chamber of Commerce (Clause 12.1).",
+    "expected_pages": [
+      8
+    ]
+  },
+  {
+    "id": 7,
+    "document": "HealthGate",
+    "source_file": "HEALTHGATEDATACORP_11_24_1999-EX-10.1-HOSTING AND MANAGEMENT AGREEMENT - Escrow Agreement.pdf",
+    "type": "easy",
+    "question": "What is the date of NCC Escrow International's letter proposing the escrow agreement, and to whom is it addressed?",
+    "expected_answer": "12 March 1998, addressed to Mr J S Saunders of Linnells, Solicitors.",
+    "expected_pages": [
+      1,
+      2
+    ]
+  },
+  {
+    "id": 8,
+    "document": "HealthGate",
+    "source_file": "HEALTHGATEDATACORP_11_24_1999-EX-10.1-HOSTING AND MANAGEMENT AGREEMENT - Escrow Agreement.pdf",
+    "type": "connecting",
+    "question": "Clause 6.2.3 requires the Licensee to exhibit \"a signed confidentiality undertaking as detailed in Schedule 3\" before NCC will release the Material — what does that Schedule 3 undertaking actually oblige the Licensee to do?",
+    "expected_answer": "It must (1) use the Material only to understand, maintain and correct the Package on the Licensee's own behalf, (2) not disclose it except to need-to-know employees/contractors (who must sign their own undertaking with NCC), (3) hold all media securely when not in use, and (4) destroy it if the Licensee ceases to be entitled to use the Package.",
+    "expected_pages": [
+      6,
+      8,
+      9
+    ]
+  },
+  {
+    "id": 9,
+    "document": "Adams Golf",
+    "source_file": "ADAMSGOLFINC_03_21_2005-EX-10.17-ENDORSEMENT AGREEMENT.PDF",
+    "type": "easy",
+    "question": "On what date was the Endorsement Agreement entered into, and between which two parties?",
+    "expected_answer": "January 13, 2005, between professional golfer Tom Watson (\"Consultant\") and Adams Golf, Ltd.",
+    "expected_pages": [
+      2
+    ]
+  },
+  {
+    "id": 10,
+    "document": "Adams Golf",
+    "source_file": "ADAMSGOLFINC_03_21_2005-EX-10.17-ENDORSEMENT AGREEMENT.PDF",
+    "type": "easy",
+    "question": "What date does the Term of the Agreement commence?",
+    "expected_answer": "September 1, 2004.",
+    "expected_pages": [
+      2
+    ]
+  },
+  {
+    "id": 11,
+    "document": "Adams Golf",
+    "source_file": "ADAMSGOLFINC_03_21_2005-EX-10.17-ENDORSEMENT AGREEMENT.PDF",
+    "type": "easy",
+    "question": "What does the Agreement define as the \"Contract Territory\"?",
+    "expected_answer": "\"The entire world.\"",
+    "expected_pages": [
+      3
+    ]
+  },
+  {
+    "id": 12,
+    "document": "Adams Golf",
+    "source_file": "ADAMSGOLFINC_03_21_2005-EX-10.17-ENDORSEMENT AGREEMENT.PDF",
+    "type": "easy",
+    "question": "Under what state's law is the Agreement governed?",
+    "expected_answer": "The State of Kansas.",
+    "expected_pages": [
+      10
+    ]
+  },
+  {
+    "id": 13,
+    "document": "Adams Golf",
+    "source_file": "ADAMSGOLFINC_03_21_2005-EX-10.17-ENDORSEMENT AGREEMENT.PDF",
+    "type": "easy",
+    "question": "Under the Behavior clause (Section 12), how long does Adams Golf have to exercise its right of termination after senior management becomes aware of disqualifying conduct?",
+    "expected_answer": "Ninety (90) days.",
+    "expected_pages": [
+      6
+    ]
+  },
+  {
+    "id": 14,
+    "document": "Adams Golf",
+    "source_file": "ADAMSGOLFINC_03_21_2005-EX-10.17-ENDORSEMENT AGREEMENT.PDF",
+    "type": "easy",
+    "question": "What notice period applies to termination for cause under Section 23?",
+    "expected_answer": "Fifteen (15) days' written notice, with the breach curable within that same 15-day period.",
+    "expected_pages": [
+      10
+    ]
+  },
+  {
+    "id": 15,
+    "document": "Adams Golf",
+    "source_file": "ADAMSGOLFINC_03_21_2005-EX-10.17-ENDORSEMENT AGREEMENT.PDF",
+    "type": "easy",
+    "question": "What address is designated for serving written notices on Tom Watson?",
+    "expected_answer": "c/o Assured Management Company, 1901 W. 47th Place, Suite 200, Westwood, Kansas 66205.",
+    "expected_pages": [
+      12
+    ]
+  },
+  {
+    "id": 16,
+    "document": "Adams Golf",
+    "source_file": "ADAMSGOLFINC_03_21_2005-EX-10.17-ENDORSEMENT AGREEMENT.PDF",
+    "type": "easy",
+    "question": "How is a dispute under the Agreement arbitrated, and where?",
+    "expected_answer": "By a panel of three arbitrators, who must be lawyers, deciding by majority, under the Arbitration Rules of the American Arbitration Association; venue is Kansas.",
+    "expected_pages": [
+      12
+    ]
+  },
+  {
+    "id": 17,
+    "document": "Adams Golf",
+    "source_file": "ADAMSGOLFINC_03_21_2005-EX-10.17-ENDORSEMENT AGREEMENT.PDF",
+    "type": "connecting",
+    "question": "Section 7 says that if Consultant finds the Mandatory Product unsuitable for tournament competition, Adams Golf has a set period to supply an acceptable replacement or terminate — how long is that period, and how is Consultant's compensation then prorated?",
+    "expected_answer": "Thirty (30) days; if the agreement is terminated on this basis, compensation is prorated \"on the same repayment schedule as provide[d] in paragraph 8A\" — the Section 8 minimum-tournaments repayment schedule.",
+    "expected_pages": [
+      4,
+      5
+    ]
+  },
+  {
+    "id": 18,
+    "document": "Adams Golf",
+    "source_file": "ADAMSGOLFINC_03_21_2005-EX-10.17-ENDORSEMENT AGREEMENT.PDF",
+    "type": "easy",
+    "question": "Who signed the Agreement for each party, and in what capacity?",
+    "expected_answer": "Tom Watson signed for himself; Oliver G. \"Chip\" Brewer III signed for Adams Golf, Ltd. as CEO. Both dated January 13, 2005.",
+    "expected_pages": [
+      13
+    ]
+  },
+  {
+    "id": 19,
+    "document": "Bluefly",
+    "source_file": "BLUEFLYINC_03_27_2002-EX-10.27-e-business Hosting Agreement.PDF",
+    "type": "easy",
+    "question": "Who are the two parties to the e-business Hosting Agreement, and what is IBM contracted to provide?",
+    "expected_answer": "International Business Machines Corporation (\"IBM\") and Bluefly, Inc. (\"Customer\"); IBM will provide Web hosting and related Services to Customer.",
+    "expected_pages": [
+      1
+    ]
+  },
+  {
+    "id": 20,
+    "document": "Bluefly",
+    "source_file": "BLUEFLYINC_03_27_2002-EX-10.27-e-business Hosting Agreement.PDF",
+    "type": "easy",
+    "question": "How does the Agreement define \"Enterprise\"?",
+    "expected_answer": "Any legal entity and the subsidiaries it owns by more than 50 percent, limited to the portion of the Enterprise physically located within the United States of America.",
+    "expected_pages": [
+      1
+    ]
+  },
+  {
+    "id": 21,
+    "document": "Bluefly",
+    "source_file": "BLUEFLYINC_03_27_2002-EX-10.27-e-business Hosting Agreement.PDF",
+    "type": "easy",
+    "question": "What cure periods apply to a material breach under Section 3.3 — general breach vs. Customer nonpayment?",
+    "expected_answer": "Thirty (30) days generally; seven (7) business days specifically for nonpayment by Customer.",
+    "expected_pages": [
+      2
+    ]
+  },
+  {
+    "id": 22,
+    "document": "Bluefly",
+    "source_file": "BLUEFLYINC_03_27_2002-EX-10.27-e-business Hosting Agreement.PDF",
+    "type": "easy",
+    "question": "What must Customer do to terminate the Agreement for convenience under Section 3.4?",
+    "expected_answer": "Provide at least one month's prior written notice to IBM, and pay any applicable early termination charges specified in Attachment A / Service Option Attachments.",
+    "expected_pages": [
+      2
+    ]
+  },
+  {
+    "id": 23,
+    "document": "Bluefly",
+    "source_file": "BLUEFLYINC_03_27_2002-EX-10.27-e-business Hosting Agreement.PDF",
+    "type": "easy",
+    "question": "What is the cap on IBM's liability for \"other actual direct damages\" under Section 9.1(c)?",
+    "expected_answer": "The greater of $100,000 or the charges Customer paid IBM for the Services in the twelve (12) months immediately preceding the accrual of the first claim.",
+    "expected_pages": [
+      5
+    ]
+  },
+  {
+    "id": 24,
+    "document": "Bluefly",
+    "source_file": "BLUEFLYINC_03_27_2002-EX-10.27-e-business Hosting Agreement.PDF",
+    "type": "easy",
+    "question": "Under what state's law is the Agreement governed (Section 14.3)?",
+    "expected_answer": "The substantive laws of the State of New York, without regard to conflict-of-laws provisions.",
+    "expected_pages": [
+      7
+    ]
+  },
+  {
+    "id": 25,
+    "document": "Bluefly",
+    "source_file": "BLUEFLYINC_03_27_2002-EX-10.27-e-business Hosting Agreement.PDF",
+    "type": "easy",
+    "question": "Who signed the Agreement for Bluefly and for IBM, and on what dates?",
+    "expected_answer": "Patrick C. Barry (Chief Financial Officer and Chief Operating Officer) for Bluefly Inc., dated 1/9/02; Maura Lynch Gray (Business Unit Executive) for IBM, dated 1/14/02.",
+    "expected_pages": [
+      9
+    ]
+  },
+  {
+    "id": 26,
+    "document": "Bluefly",
+    "source_file": "BLUEFLYINC_03_27_2002-EX-10.27-e-business Hosting Agreement.PDF",
+    "type": "easy",
+    "question": "What license does IBM grant Customer over \"Type II Materials\"?",
+    "expected_answer": "An irrevocable, nonexclusive, worldwide, paid-up license to use, execute, reproduce, display, perform, and distribute copies of Type II Materials, but only within Customer's Enterprise.",
+    "expected_pages": [
+      4
+    ]
+  },
+  {
+    "id": 27,
+    "document": "Bluefly",
+    "source_file": "BLUEFLYINC_03_27_2002-EX-10.27-e-business Hosting Agreement.PDF",
+    "type": "connecting",
+    "question": "Section 8.1 lists exceptions where IBM is not responsible for third-party infringement claims — what are they, and how does Section 12.1's license restriction on Base Components relate to that same risk allocation?",
+    "expected_answer": "The four exceptions are: (1) anything Customer provides that gets incorporated into the Materials, (2) Customer's modification of the Materials, (3) combining/operating/using the Materials with any non-IBM-provided product, data, or apparatus, and (4) non-IBM hardware, software, or data included in the Base Components. Section 12.1 similarly protects IBM's control over the Base Components by barring Customer from downloading, reverse-assembling, reverse-compiling, or translating them (except one backup copy).",
+    "expected_pages": [
+      4,
+      5,
+      6
+    ]
+  },
+  {
+    "id": 28,
+    "document": "Bluefly",
+    "source_file": "BLUEFLYINC_03_27_2002-EX-10.27-e-business Hosting Agreement.PDF",
+    "type": "connecting",
+    "question": "Section 6.0 references a separate \"Agreement for Exchange of Confidential Information\" (\"AECI\") — when was it executed, and which section of the Base Terms confirms Section 6 (Confidentiality) survives termination?",
+    "expected_answer": "The AECI was executed by IBM on August 3, 2001. Section 14.2 (Survival) lists Section 6, among others (3.5, 4, 5, 7, 8, 9, 10, 11.2, 11.3, 11.6, 12.2, 12.3, 14), as surviving termination or expiration until fulfilled.",
+    "expected_pages": [
+      3,
+      7
+    ]
+  },
+  {
+    "id": 29,
+    "document": "Transphorm",
+    "source_file": "TRANSPHORM,INC_02_14_2020-EX-10.12(1)-JOINT VENTURE AGREEMENT.PDF",
+    "type": "easy",
+    "question": "What are the three parties to the Joint Venture Agreement, and what date was it signed?",
+    "expected_answer": "Aizu Fujitsu Semiconductor Limited (\"AFSL\"), Fujitsu Semiconductor Limited (\"FSL\"), and Transphorm, Inc. (\"TPH\"); dated May 23, 2017.",
+    "expected_pages": [
+      4
+    ]
+  },
+  {
+    "id": 30,
+    "document": "Transphorm",
+    "source_file": "TRANSPHORM,INC_02_14_2020-EX-10.12(1)-JOINT VENTURE AGREEMENT.PDF",
+    "type": "easy",
+    "question": "What is \"AFSW\" (the \"Company\"), and what business is it engaged in?",
+    "expected_answer": "Aizu Fujitsu Semiconductor Wafer Solution Limited, a kabushiki kaisha incorporated in Japan, engaged in 150mm wafer foundry services and related services.",
+    "expected_pages": [
+      4
+    ]
+  },
+  {
+    "id": 31,
+    "document": "Transphorm",
+    "source_file": "TRANSPHORM,INC_02_14_2020-EX-10.12(1)-JOINT VENTURE AGREEMENT.PDF",
+    "type": "easy",
+    "question": "How is the Board of the Company composed, and who chairs it?",
+    "expected_answer": "Five Directors total — three nominated by AFSL and two by TPH-A. A Director nominated by AFSL serves as Chairman of the Board at all meetings.",
+    "expected_pages": [
+      11
+    ]
+  },
+  {
+    "id": 32,
+    "document": "Transphorm",
+    "source_file": "TRANSPHORM,INC_02_14_2020-EX-10.12(1)-JOINT VENTURE AGREEMENT.PDF",
+    "type": "easy",
+    "question": "What date does the Agreement define as the \"Option Starting Date\"?",
+    "expected_answer": "February 1, 2020.",
+    "expected_pages": [
+      6
+    ]
+  },
+  {
+    "id": 33,
+    "document": "Transphorm",
+    "source_file": "TRANSPHORM,INC_02_14_2020-EX-10.12(1)-JOINT VENTURE AGREEMENT.PDF",
+    "type": "easy",
+    "question": "Under what law is the Agreement governed, and which language version controls interpretation?",
+    "expected_answer": "The laws of Japan; the English text of the Agreement controls any interpretation of its provisions.",
+    "expected_pages": [
+      29
+    ]
+  },
+  {
+    "id": 34,
+    "document": "Transphorm",
+    "source_file": "TRANSPHORM,INC_02_14_2020-EX-10.12(1)-JOINT VENTURE AGREEMENT.PDF",
+    "type": "easy",
+    "question": "How is a dispute that can't be resolved by consultation ultimately arbitrated?",
+    "expected_answer": "By arbitration administered by the Hong Kong International Arbitration Centre (HKIAC), seated in Hong Kong and conducted in English, before a panel of three arbitrators.",
+    "expected_pages": [
+      29,
+      30
+    ]
+  },
+  {
+    "id": 35,
+    "document": "Transphorm",
+    "source_file": "TRANSPHORM,INC_02_14_2020-EX-10.12(1)-JOINT VENTURE AGREEMENT.PDF",
+    "type": "easy",
+    "question": "What is the \"Long Stop Date\" by which the Effective Date must occur, and under what circumstance is it extended?",
+    "expected_answer": "September 30, 2017; extended to December 31, 2017 if a required waiting period under applicable law relating to the transactions has not expired or been terminated early before September 30, 2017.",
+    "expected_pages": [
+      18
+    ]
+  },
+  {
+    "id": 36,
+    "document": "Transphorm",
+    "source_file": "TRANSPHORM,INC_02_14_2020-EX-10.12(1)-JOINT VENTURE AGREEMENT.PDF",
+    "type": "easy",
+    "question": "Who signed the Agreement on behalf of each of the three parties, and in what capacity?",
+    "expected_answer": "Atsuo Shimizu (President and Representative Director) for AFSL; Kagemasa Magaribuchi (President and Representative Director) for FSL; Mario Rivas (Chief Executive Officer) for Transphorm, Inc.",
+    "expected_pages": [
+      32
+    ]
+  },
+  {
+    "id": 37,
+    "document": "Transphorm",
+    "source_file": "TRANSPHORM,INC_02_14_2020-EX-10.12(1)-JOINT VENTURE AGREEMENT.PDF",
+    "type": "easy",
+    "question": "What agreements are included in the defined term \"Ancillary Agreements\"?",
+    "expected_answer": "The SPA, the AFSW Secondment Agreement, the TPH-J Secondment Agreement, the Wafer Supply Agreement, the Joinder Agreement, the Process Development Amendment, and the Services Agreement Amendment.",
+    "expected_pages": [
+      5
+    ]
+  },
+  {
+    "id": 38,
+    "document": "Transphorm",
+    "source_file": "TRANSPHORM,INC_02_14_2020-EX-10.12(1)-JOINT VENTURE AGREEMENT.PDF",
+    "type": "easy",
+    "question": "Name three matters that require unanimous Board approval under Section 4.7.",
+    "expected_answer": "Any three of, e.g.: revising the budget or Business Plan; manufacturing semiconductor products directly for non-parties; selling/transferring/leasing/disposing of Company property or assets; consummating a Change of Control Transaction; issuing new shares of authorized capital.",
+    "expected_pages": [
+      13
+    ]
+  },
+  {
+    "id": 39,
+    "document": "Transphorm",
+    "source_file": "TRANSPHORM,INC_02_14_2020-EX-10.12(1)-JOINT VENTURE AGREEMENT.PDF",
+    "type": "connecting",
+    "question": "Section 9.1.4 sets the \"Put Option Price\" formula — what is it, and what does \"Net Book Value\" (used in that formula) actually refer back to?",
+    "expected_answer": "The Put Option Price is the greater of (x) the Net Book Value as of the most recently completed month-end before the Put Closing Date, minus the Net Book Value as of the most recently completed month-end before the Effective Date, multiplied by the number of Put Shares, or (y) one Japanese Yen (¥1). \"Net Book Value\" is a defined term whose meaning is ascribed in the separate Shares Purchase Agreement (\"SPA\"), not spelled out in this Agreement itself.",
+    "expected_pages": [
+      23,
+      6
+    ]
+  },
+  {
+    "id": 40,
+    "document": "Transphorm",
+    "source_file": "TRANSPHORM,INC_02_14_2020-EX-10.12(1)-JOINT VENTURE AGREEMENT.PDF",
+    "type": "connecting",
+    "question": "Section 9.1.1 defines how FSL/AFSL trigger the Put Option — what must the Put Exercise Notice state, and how does Section 9.1.6 then set the closing mechanics?",
+    "expected_answer": "The Put Exercise Notice must state the Party's bona fide intention to exercise the Put Option and the date it intends the Put Closing Date to occur. Section 9.1.6 then requires the Put Closing Date to fall at least sixty (60) days after that notice, at which point TPH-A (or its designees) must pay AFSL the Put Option Price by bank transfer, in exchange for AFSL delivering a duly executed letter of request to register the transfer.",
+    "expected_pages": [
+      22,
+      23
+    ]
+  },
+  {
+    "id": 41,
+    "document": "Transphorm",
+    "source_file": "TRANSPHORM,INC_02_14_2020-EX-10.12(1)-JOINT VENTURE AGREEMENT.PDF",
+    "type": "connecting",
+    "question": "Under Section 4.9, what happens if the Board can't resolve a Section 4.7 matter within 30 business days, and where does the Agreement send the dispute if even that escalation fails?",
+    "expected_answer": "The matter goes to the \"Designated Individuals\" — the Chief Executive Officer of FSL and the Chief Executive Officer of TPH — for a joint, final and binding decision. If they can't agree within sixty (60) days, any Party may refer the matter to the HKIAC arbitration procedure set out in Section 11.15.",
+    "expected_pages": [
+      12,
+      29,
+      30
+    ]
+  },
+  {
+    "id": 42,
+    "document": "Transphorm",
+    "source_file": "TRANSPHORM,INC_02_14_2020-EX-10.12(1)-JOINT VENTURE AGREEMENT.PDF",
+    "type": "easy",
+    "question": "What best-efforts employee-retention commitment applies after the Put Closing Date or Call Closing Date?",
+    "expected_answer": "For two (2) years after the Put Closing Date or Call Closing Date, TPH shall make, and shall cause TPH-A to make, every best effort to maintain the employees of the Company.",
+    "expected_pages": [
+      25
+    ]
+  },
+  {
+    "id": 43,
+    "document": "Transphorm",
+    "source_file": "TRANSPHORM,INC_02_14_2020-EX-10.12(1)-JOINT VENTURE AGREEMENT.PDF",
+    "type": "easy",
+    "question": "How many pieces of GaN Equipment are listed in Appendix 2, and what is the Asset ID of the first one?",
+    "expected_answer": "Six pieces of equipment are listed; the first has Asset ID I12026102439.",
+    "expected_pages": [
+      36
+    ]
+  },
+  {
+    "id": 44,
+    "document": "Dynamex",
+    "source_file": "DYNAMEXINC_06_06_1996-EX-10.4-TRANSPORTATION SERVICES AGREEMENT.PDF",
+    "type": "easy",
+    "question": "What two parties signed the Agreement, and on what date?",
+    "expected_answer": "Purolator Courier Ltd. (\"Purolator\") and Parcelway Courier Systems Canada Ltd., a subsidiary of Dynamex Inc. (\"Dynamex\"); made in duplicate on the 20th day of November, 1995.",
+    "expected_pages": [
+      1
+    ]
+  },
+  {
+    "id": 45,
+    "document": "Dynamex",
+    "source_file": "DYNAMEXINC_06_06_1996-EX-10.4-TRANSPORTATION SERVICES AGREEMENT.PDF",
+    "type": "easy",
+    "question": "Name at least three events the Agreement defines as \"Force Majeure.\"",
+    "expected_answer": "Any three of: an Act of God; a strike, lockout or other labour disturbance; war/revolution/insurrection/riot/blockade; storm/fire/flood/explosion/lightning or other hazardous weather; Ministry of Transportation road closures or other government/transport-authority acts; air traffic control delays/cancellations/reroutes; loss, hijacking, government seizure or diversion.",
+    "expected_pages": [
+      1
+    ]
+  },
+  {
+    "id": 46,
+    "document": "Dynamex",
+    "source_file": "DYNAMEXINC_06_06_1996-EX-10.4-TRANSPORTATION SERVICES AGREEMENT.PDF",
+    "type": "easy",
+    "question": "What on-time performance level must each Party meet, and what happens if it isn't met in a given month?",
+    "expected_answer": "No less than ninety percent (90%) of the scheduled delivery time, measured monthly; failing to meet it constitutes a \"Monthly Service Failure.\"",
+    "expected_pages": [
+      2
+    ]
+  },
+  {
+    "id": 47,
+    "document": "Dynamex",
+    "source_file": "DYNAMEXINC_06_06_1996-EX-10.4-TRANSPORTATION SERVICES AGREEMENT.PDF",
+    "type": "easy",
+    "question": "Under Section 3.9, what dollar cap applies to Dynamex's continued sameday service to Alltours customers?",
+    "expected_answer": "Dynamex may continue providing that service only if revenue to Dynamex from that business does not exceed Five Thousand Dollars ($5,000.00) per month, provided there is no change in control of Alltours.",
+    "expected_pages": [
+      3
+    ]
+  },
+  {
+    "id": 48,
+    "document": "Dynamex",
+    "source_file": "DYNAMEXINC_06_06_1996-EX-10.4-TRANSPORTATION SERVICES AGREEMENT.PDF",
+    "type": "easy",
+    "question": "What are the two required insurance coverage minimums under Section 9.1?",
+    "expected_answer": "(a) Cargo liability insurance with a combined single limit of not less than $100,000.00 per occurrence; (b) automobile/non-owned automobile/fleet/comprehensive general/public and property liability insurance with a limit of not less than $2,000,000.00 for bodily injury and property damage per occurrence.",
+    "expected_pages": [
+      5
+    ]
+  },
+  {
+    "id": 49,
+    "document": "Dynamex",
+    "source_file": "DYNAMEXINC_06_06_1996-EX-10.4-TRANSPORTATION SERVICES AGREEMENT.PDF",
+    "type": "connecting",
+    "question": "Section 19.2 gives either Party a right to terminate on a change of control of the other — how long is that notice, and what non-competition restriction does Section 42.2 then impose on \"the Party whose control has changed\"?",
+    "expected_answer": "Section 19.2 allows termination \"upon written prior notice\" (no fixed length specified in that clause itself) on a change of control. Section 42.2 then bars the Party whose control changed from entering into an agreement with any other party to provide similar services, or providing such services without an agreement, for twelve (12) months from the effective date of that termination.",
+    "expected_pages": [
+      8,
+      11
+    ]
+  },
+  {
+    "id": 50,
+    "document": "Dynamex",
+    "source_file": "DYNAMEXINC_06_06_1996-EX-10.4-TRANSPORTATION SERVICES AGREEMENT.PDF",
+    "type": "easy",
+    "question": "Under what law is the Agreement governed, and where must arbitration take place?",
+    "expected_answer": "The laws of the Province of Ontario; arbitration takes place in the Municipality of Metropolitan Toronto under the Arbitration Act.",
+    "expected_pages": [
+      10
+    ]
+  }
+]

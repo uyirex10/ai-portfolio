@@ -1,0 +1,16 @@
+# Safety net. The Dockerfile's COPY lines are explicit and already exclude
+# these, but a future `COPY . .` would silently pull them in without this file.
+
+# Vector store: large and regenerable, mounted at run time instead.
+qdrant_data/
+
+# Secrets: supplied at run time with --env-file, never baked into a layer.
+.env
+.env.*
+
+# Local virtualenv: host-specific binaries, useless and large inside an image.
+venv/
+
+# Python bytecode and caches.
+__pycache__/
+*.py[cod]

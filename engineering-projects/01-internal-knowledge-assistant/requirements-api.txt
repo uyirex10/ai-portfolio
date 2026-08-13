@@ -1,0 +1,12 @@
+# Runtime dependencies for the FastAPI service only (api.py + rag_answer.py).
+# requirements.txt remains the full development environment: it additionally
+# carries streamlit for the UI, and pypdf and tiktoken for the offline chunking
+# and embedding scripts, none of which this service imports.
+
+fastapi
+uvicorn
+pydantic
+python-dotenv
+google-genai
+qdrant-client
+cohere

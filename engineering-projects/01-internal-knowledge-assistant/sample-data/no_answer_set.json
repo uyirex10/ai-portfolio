@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "document": "HealthGate",
+    "source_file": "HEALTHGATEDATACORP_11_24_1999-EX-10.1-HOSTING AND MANAGEMENT AGREEMENT - Escrow Agreement.pdf",
+    "question": "What hosting fees or service-level terms does HealthGate's main Hosting and Management Agreement establish for hosting the Electronic Journal platform?",
+    "note": "Not covered. This exhibit contains only the escrow schedules/agreement, not the underlying Hosting and Management Agreement's substantive hosting terms."
+  },
+  {
+    "id": 2,
+    "document": "Adams Golf",
+    "source_file": "ADAMSGOLFINC_03_21_2005-EX-10.17-ENDORSEMENT AGREEMENT.PDF",
+    "question": "What is Tom Watson's base compensation, and what are the dollar bonus amounts for winning a major or finishing in the top tier of the Champion's Tour money list?",
+    "note": "Not answerable. Every specific dollar figure in Sections 8, 18, and 19 (base compensation, per-event repayment amounts, bonus schedules) is redacted as \"[*****]\" with a footnote that the confidential material was filed separately with the Commission."
+  },
+  {
+    "id": 3,
+    "document": "Bluefly",
+    "source_file": "BLUEFLYINC_03_27_2002-EX-10.27-e-business Hosting Agreement.PDF",
+    "question": "What are the actual dollar rates or fees IBM charges Bluefly for the hosting Services?",
+    "note": "Not stated. Section 4.0 (Charges and Payment) says charges \"will be specified in Service Option Attachments and Order Forms,\" neither of which is included in this Base Terms exhibit."
+  },
+  {
+    "id": 4,
+    "document": "Transphorm",
+    "source_file": "TRANSPHORM,INC_02_14_2020-EX-10.12(1)-JOINT VENTURE AGREEMENT.PDF",
+    "question": "What percentage (or number) of AFSW's outstanding shares did AFSL actually sell to TPH-A under the SPA?",
+    "note": "Not disclosed. The Recitals state AFSL \"will sell and transfer [***] shares of the issued and outstanding shares in the Company (representing [***] of the issued and outstanding shares...)\" — both the share count and the percentage are redacted, and the underlying Shares Purchase Agreement itself is not included in this exhibit."
+  },
+  {
+    "id": 5,
+    "document": "Dynamex",
+    "source_file": "DYNAMEXINC_06_06_1996-EX-10.4-TRANSPORTATION SERVICES AGREEMENT.PDF",
+    "question": "What specific dollar rates does Purolator pay Dynamex (and vice versa) for services under this Agreement?",
+    "note": "Not stated in the body text. Section 4.0 (Rates) says the rates are set forth in Schedule \"D\" (Purolator to Dynamex) and Schedule \"E\" (Dynamex to Purolator), but neither schedule's actual content is included in this exhibit — only the cross-reference to them."
+  }
+]
