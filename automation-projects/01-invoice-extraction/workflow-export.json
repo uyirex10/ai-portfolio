@@ -117,14 +117,14 @@
           "value": "YOUR_SHEET_ID_HERE",
           "mode": "list",
           "cachedResultName": "Invoice%20Pipeline",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TYFy_qeu1GrQEixJtz6jf_uUn2d0_7lTNQX1j3NkBB4/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/REDACTED_GSHEET_DOC_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 1539433782,
           "mode": "list",
           "cachedResultName": "Books",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TYFy_qeu1GrQEixJtz6jf_uUn2d0_7lTNQX1j3NkBB4/edit#gid=1539433782"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/REDACTED_GSHEET_DOC_ID/edit#gid=1539433782"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -221,14 +221,14 @@
           "value": "YOUR_SHEET_ID_HERE",
           "mode": "list",
           "cachedResultName": "Invoice%20Pipeline",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TYFy_qeu1GrQEixJtz6jf_uUn2d0_7lTNQX1j3NkBB4/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/REDACTED_GSHEET_DOC_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 514877745,
           "mode": "list",
           "cachedResultName": "Review Queue",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TYFy_qeu1GrQEixJtz6jf_uUn2d0_7lTNQX1j3NkBB4/edit#gid=514877745"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/REDACTED_GSHEET_DOC_ID/edit#gid=514877745"
         },
         "columns": {
           "mappingMode": "defineBelow",
