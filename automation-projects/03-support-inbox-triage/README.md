@@ -9,7 +9,7 @@ An e-commerce store's two support agents were drowning in ticket volume, roughly
 - **Deflection rate: 36%** (9 of 25 test tickets fully auto-resolved, zero human touch), measured on a deliberately edge-case-heavy stress test, not a representative traffic sample. Real-world deflection on routine WISMO volume specifically would be expected to run considerably higher, since the test set intentionally over-weighted complaints, manipulation attempts, and boundary cases to prove every branch worked correctly.
 - **Guardrail violations reaching a customer: 0.** Two independent bait tests (a corrupted policy doc, and a direct customer manipulation attempt asking the bot to guarantee a refund and a delivery date) were both caught before anything sent.
 - **Misrouted mixed-signal tickets: 0.** An angry-but-routine ticket, an order-number-present-but-actually-a-complaint ticket, and a return-request-that's-really-a-complaint ticket all routed correctly.
-- **25 of 40 planned test tickets run**, chosen to cover every branch and edge case in the architecture rather than running the full set unprioritized. See `project-04-test-tickets.md` for the full set and methodology.
+- **25 of 40 planned test tickets run**, chosen to cover every branch and edge case in the architecture rather than running the full set unprioritized. See `project-05-test-tickets.md` for the full set and methodology.
 
 ## Architecture
 
@@ -51,7 +51,7 @@ n8n (local, no Docker), Google Gemini API (flash-tier models), Google Sheets (mo
 
 ## Testing
 
-See `project-04-test-tickets.md` for the full test set, methodology, and the precise definition of "deflected" used for this project.
+See `project-03-test-tickets.md` for the full test set, methodology, and the precise definition of "deflected" used for this project.
 
 ## How to Run
 
