@@ -1,0 +1,17 @@
+order_number,email,status,carrier,tracking_number,expected_delivery,item,return_eligible_until
+ORD-10001,alice.wong@example.com,In Transit,UPS,1Z999AA10001,2026-08-19,Wireless Earbuds,
+ORD-10002,ben.carter@example.com,In Transit,FedEx,7712340002,2026-08-20,Yoga Mat,
+ORD-10003,carla.diaz@example.com,In Transit,USPS,9400110003,2026-08-21,Desk Lamp,
+ORD-10004,david.osei@example.com,In Transit,UPS,1Z999AA10004,2026-08-22,Phone Case,
+ORD-10016,paul.adeyemi@example.com,In Transit,FedEx,7712340016,2026-08-23,Laptop Stand,
+ORD-10005,emma.li@example.com,Delayed,FedEx,7712340005,2026-08-05,Bluetooth Speaker,
+ORD-10006,frank.moss@example.com,Delayed,USPS,9400110006,2026-08-03,Kitchen Scale,
+ORD-10007,grace.kim@example.com,Delayed,UPS,1Z999AA10007,2026-07-30,Backpack,
+ORD-10008,henry.paul@example.com,Delivered,FedEx,7712340008,2026-08-10,Coffee Maker,2026-08-24
+ORD-10009,isla.brown@example.com,Delivered,USPS,9400110009,2026-08-12,Table Lamp,2026-08-26
+ORD-10010,jack.nguyen@example.com,Delivered,UPS,1Z999AA10010,2026-08-14,Running Shoes,2026-08-28
+ORD-10011,kara.silva@example.com,Delivered,FedEx,7712340011,2026-08-15,Blender,2026-08-29
+ORD-10015,olga.ivanov@example.com,Delivered,UPS,1Z999AA10015,2026-08-16,Water Bottle Set,2026-08-30
+ORD-10012,liam.foster@example.com,Delivered,USPS,9400110012,2026-07-01,Office Chair,2026-07-15
+ORD-10013,maya.chen@example.com,Delivered,UPS,1Z999AA10013,2026-07-05,Bookshelf,2026-07-19
+ORD-10014,noah.reyes@example.com,Delivered,FedEx,7712340014,2026-07-10,Air Fryer,2026-07-24

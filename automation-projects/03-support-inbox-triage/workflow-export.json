@@ -1,0 +1,1142 @@
+{
+  "name": "Project 3 - Support Inbox Triage & Reply Drafter",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -416,
+        0
+      ],
+      "id": "d7b0f91b-5a24-4f48-9dd8-928ad8d8568c",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "qPSk115dvHbxBzcn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.5-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.5-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.snippet }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "systemMessage": "You are a support ticket classifier for an e-commerce store.\n\nClassify the customer message into exactly one intent, and assess urgency, sentiment, and your confidence in the intent classification. Also extract the order number if the customer mentions one, formatted like ORD-XXXXX. If no order number is mentioned, return null for order_number.\n\nIntents:\n- order_status: routine questions about order status, tracking, or delivery timing\n- return: requests to return or exchange an item\n- complaint: anger or frustration, broken/wrong/damaged items, unresolved repeated issues, or non-delivery despite tracking showing \"delivered\"\n- other: anything that doesn't clearly fit the above\n\nOutput only valid JSON in this exact shape, no extra text:\n{\"intent\": \"...\", \"urgency\": \"...\", \"sentiment\": \"...\", \"confidence\": 0.0, \"order_number\": \"...\" or null}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        -240,
+        0
+      ],
+      "id": "a2d10e4a-8f33-4ac1-af60-c7d1badfe990",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Ds8Vnb2A65deVYih",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse Gemini's structured JSON response into clean fields\n\nfor (const item of $input.all()) {\n  const raw = item.json.content?.parts?.[0]?.text ?? item.json.text ?? item.json.output ?? item.json.data;\n\n  let parsed;\n  try {\n    parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;\n  } catch (e) {\n    const match = String(raw).match(/\\{[\\s\\S]*\\}/);\n    parsed = match ? JSON.parse(match[0]) : { intent: 'other', urgency: 'medium', sentiment: 'neutral', confidence: 0, order_number: null };\n  }\n\n  item.json.intent = parsed.intent;\n  item.json.urgency = parsed.urgency;\n  item.json.sentiment = parsed.sentiment;\n  item.json.confidence = parsed.confidence;\n  item.json.order_number = parsed.order_number ?? null;\n\n  const fromRaw = $('Gmail Trigger').first().json.From || '';\n  const emailMatch = fromRaw.match(/<(.+)>/);\n  item.json.senderEmail = emailMatch ? emailMatch[1] : fromRaw.trim();\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        0
+      ],
+      "id": "ae36d987-7077-4350-972b-f42b0243d5d1",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "36d439fd-0da3-4725-81b8-3426486933ec",
+              "leftValue": "={{ $json.order_number }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        704,
+        -48
+      ],
+      "id": "b8fc94ec-d30d-44fb-bc34-a99f33be2542",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "<REDACTED_SHEET_ID>",
+          "mode": "list",
+          "cachedResultName": "Support Inbox",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<REDACTED_SHEET_ID>/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<REDACTED_SHEET_ID>/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "order_number",
+              "lookupValue": "={{ $json.order_number }}"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        960,
+        -160
+      ],
+      "id": "e14058e4-8cd9-411b-a83b-d16418afac19",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vcM9EnJgv8ephU1m",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "<REDACTED_SHEET_ID>",
+          "mode": "list",
+          "cachedResultName": "Support Inbox",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<REDACTED_SHEET_ID>/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<REDACTED_SHEET_ID>/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "email",
+              "lookupValue": "={{ $json.senderEmail }}"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        960,
+        32
+      ],
+      "id": "191a4d11-1c49-47c4-9a1c-2f25dc420abf",
+      "name": "Get row(s) in sheet1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vcM9EnJgv8ephU1m",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1200,
+        -48
+      ],
+      "id": "4f9a1e9d-9a8b-426f-a9ba-9d9f9732bdf7",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all().filter(item => item.json && item.json.order_number);\nconst matchCount = rows.length;\n\nconst classification = $('Code in JavaScript').first().json;\n\nreturn [{\n  json: {\n    matchCount,\n    matchedOrders: rows.map(r => r.json.order_number),\n    matchedRows: rows.map(r => r.json),\n    intent: classification.intent,\n    urgency: classification.urgency,\n    sentiment: classification.sentiment,\n    confidence: classification.confidence,\n    order_number: classification.order_number,\n    senderEmail: classification.senderEmail\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1376,
+        -48
+      ],
+      "id": "2250a8f0-9b7c-4fa2-a433-d0b2a577324f",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "01b7d897-a3ab-45b5-b86e-c4a2af857005",
+              "leftValue": "={{ $json.matchCount }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1584,
+        -48
+      ],
+      "id": "485926c7-3a3f-47a4-914e-3623ca49fa91",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json;\nlet replyText;\n\nif (data.matchCount === 0) {\n  replyText = \"We couldn't locate an order matching that information. Could you double-check the order number, or the email used at checkout?\";\n} else {\n  const orderList = data.matchedOrders.join(', ');\n  replyText = `We found more than one order under this email. Could you confirm which one you're asking about: ${orderList}?`;\n}\n\nreturn [{ json: { ...data, replyText } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2096,
+        32
+      ],
+      "id": "8ba50463-f3c7-4c47-b978-723e6e940d64",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.senderEmail }}",
+        "subject": "={{ 'Re: ' + $('Gmail Trigger').first().json.Subject }}",
+        "emailType": "text",
+        "message": "={{ $json.replyText }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2544,
+        32
+      ],
+      "id": "ce4a6338-875f-4eea-be2a-aee770d48b0e",
+      "name": "Send a message",
+      "webhookId": "ef0e3f8b-ec8f-44b2-aa51-85a4812a8e82",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "qPSk115dvHbxBzcn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.5-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.5-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Order data:\n\nStatus: {{ $json.matchedRows[0].status }}\n\nCarrier: {{ $json.matchedRows[0].carrier }}\n\nTracking number: {{ $json.matchedRows[0].tracking_number }}\n\nExpected delivery: {{ $json.matchedRows[0].expected_delivery }}\n\nItem: {{ $json.matchedRows[0].item }}\n\nShipping policy:\n\nStandard orders are normally delivered within 3 to 7 business days after shipment. Orders past 7 business days may be treated as delayed. Never invent, guarantee, or independently promise a delivery date beyond what's given above.\n\nCustomer message:\n\n{{ $('Gmail Trigger').first().json.snippet }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "systemMessage": "=You are a support reply drafter for an e-commerce store. Draft a short, direct reply to the customer's message using ONLY the order data and policy text provided below. Do not invent any information not present in this data. Output only the reply text, no JSON, no extra commentary."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        1776,
+        -160
+      ],
+      "id": "2815f925-7008-49fd-af5e-e630c791040b",
+      "name": "Message a model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Ds8Vnb2A65deVYih",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const draft = $json.content?.parts?.[0]?.text\n  ?? $json.text\n  ?? $json.output\n  ?? '';\n\nconst forbiddenPatterns = [\n  { name: 'currency amount', regex: /(\\$|€|£)\\s?\\d/ },\n  { name: 'currency word', regex: /\\b\\d+\\s?(dollars|euros|pounds|usd|eur|gbp)\\b/i },\n  { name: 'refund mention', regex: /\\brefund/i },\n  { name: 'compensation mention', regex: /\\bcompensat/i },\n  { name: 'absolute commitment language', regex: /\\b(guarantee|guaranteed|promise|promised)\\b/i }\n];\n\nconst violations = forbiddenPatterns\n  .filter(p => p.regex.test(draft))\n  .map(p => p.name);\n\nconst source = $('Code in JavaScript1').first().json;\n\nreturn [{\n  json: {\n    ...source,\n    draftReply: draft,\n    guardrailPass: violations.length === 0,\n    guardrailViolations: violations\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2096,
+        -160
+      ],
+      "id": "55b918c1-5f78-48f9-812e-fc959540f80b",
+      "name": "Code in JavaScript3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4f93f8cc-ea83-48b6-be09-141472e813b8",
+              "leftValue": "={{ $json.guardrailPass }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2304,
+        -160
+      ],
+      "id": "459349d5-844d-44f4-a043-8f6dd65de43d",
+      "name": "If2",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.senderEmail }}",
+        "subject": "={{ 'Re: ' + $('Gmail Trigger').first().json.Subject }}",
+        "emailType": "text",
+        "message": "={{ $json.draftReply }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2528,
+        -176
+      ],
+      "id": "38be54c0-4005-4d33-97cf-4a83fc173ebc",
+      "name": "Send a message1",
+      "webhookId": "959da46a-6cbf-447a-9a28-892e79b1558f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "qPSk115dvHbxBzcn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "862189f1-3e7d-4363-b765-884f177a4721",
+              "leftValue": "={{ $json.confidence }}",
+              "rightValue": 0.6,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        304,
+        0
+      ],
+      "id": "8efe4b38-6bbe-4e4d-a154-e14d56c38a13",
+      "name": "Confidence Gate"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "=order_status",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "8497cc6a-6dca-4de7-a4e6-ed93bc79863d"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "order_status"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "3c0140b5-7f1a-453f-ba8b-3331b2539763",
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "return",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "return"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        -32
+      ],
+      "id": "4818840e-6901-414a-b5fe-9f39efae1177",
+      "name": "Intent Router",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.5-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.5-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Return policy:\nCustomers may request a return within 14 calendar days after delivery. Returned items must be unused, in resalable condition, with original tags and packaging where applicable. Return shipping is the customer's responsibility unless the item is defective, damaged on arrival, or the wrong item was sent.\n\nCustomer message:\n{{ $('Gmail Trigger').first().json.snippet }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "systemMessage": "You are a support reply drafter for an e-commerce store. Draft a short, empathetic reply addressing the customer's return request, using ONLY the return policy text provided above. Do not approve or reject the return yourself, a human will review this draft before anything is sent. Do not invent any information not in the policy text. Output only the reply text, no JSON, no extra commentary."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        1008,
+        304
+      ],
+      "id": "b7acf4ed-b5fe-49a8-b465-f152cbc64e33",
+      "name": "Message a model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Ds8Vnb2A65deVYih",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const draft = $json.content?.parts?.[0]?.text\n  ?? $json.text\n  ?? $json.output\n  ?? '';\n\nconst forbiddenPatterns = [\n  { name: 'currency amount', regex: /(\\$|€|£)\\s?\\d/ },\n  { name: 'currency word', regex: /\\b\\d+\\s?(dollars|euros|pounds|usd|eur|gbp)\\b/i },\n  { name: 'compensation mention', regex: /\\bcompensat/i },\n  { name: 'absolute commitment language', regex: /\\b(guarantee|guaranteed|promise|promised)\\b/i },\n  { name: 'premature approval language', regex: /\\b(approved|is approved|will be approved|confirmed|is confirmed)\\b/i }\n];\n\nconst violations = forbiddenPatterns\n  .filter(p => p.regex.test(draft))\n  .map(p => p.name);\n\nconst source = $('Code in JavaScript').first().json;\n\nreturn [{\n  json: {\n    ...source,\n    draftReply: draft,\n    guardrailPass: violations.length === 0,\n    guardrailViolations: violations\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1568,
+        304
+      ],
+      "id": "03664231-aae6-4fa1-8067-4b0fc645a0f8",
+      "name": "Guardrail node"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "<REDACTED_SHEET_ID>",
+          "mode": "list",
+          "cachedResultName": "Support Inbox",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<REDACTED_SHEET_ID>/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1752896664,
+          "mode": "list",
+          "cachedResultName": "Pending Approval",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<REDACTED_SHEET_ID>/edit#gid=1752896664"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp  ": "={{ $now.toISO() }}",
+            "senderEmail": "={{ $json.senderEmail }}",
+            "orderNumber": "={{ $json.order_number }}",
+            "customerMessage": "={{ $('Gmail Trigger').first().json.snippet }}",
+            "draftReply": "={{ $json.draftReply }}",
+            "guardrailPass": "={{ $json.guardrailPass }}",
+            "guardrailViolations": "={{ $json.guardrailViolations.join(', ') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "timestamp  ",
+              "displayName": "timestamp  ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "senderEmail",
+              "displayName": "senderEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "orderNumber",
+              "displayName": "orderNumber",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "customerMessage",
+              "displayName": "customerMessage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "draftReply",
+              "displayName": "draftReply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "guardrailPass",
+              "displayName": "guardrailPass",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "guardrailViolations",
+              "displayName": "guardrailViolations",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2016,
+        304
+      ],
+      "id": "2a7ec73f-1552-4994-a32d-b5196a9b7d35",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vcM9EnJgv8ephU1m",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "<REDACTED_CHANNEL_ID>",
+          "mode": "list",
+          "cachedResultName": "support-escalations"
+        },
+        "text": "=🟡 *Return draft needs approval* From: {{ $json.senderEmail }} Order: {{ $json.order_number }} Guardrail: {{ $json.guardrailPass ? \"✅ Pass\" : \"⚠️ FLAGGED - \" + $json.guardrailViolations.join(', ') }}  Customer message: {{ $('Gmail Trigger').first().json.snippet }}  Drafted reply: {{ $json.draftReply }}  Review in the Pending Approval sheet before sending.",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        2544,
+        304
+      ],
+      "id": "e0dc481d-ac1a-44fe-96d3-65649c37b7ea",
+      "name": "Send a message2",
+      "webhookId": "7fb8e3fb-093b-4666-b412-cb7ff100e591",
+      "credentials": {
+        "slackApi": {
+          "id": "Poaw4VOoD8J3flRq",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nreturn [{\n  json: {\n    escalationReason: 'Low classification confidence',\n    senderEmail: data.senderEmail,\n    orderNumber: data.order_number,\n    customerMessage: $('Gmail Trigger').first().json.snippet,\n    intent: data.intent,\n    urgency: data.urgency,\n    sentiment: data.sentiment,\n    confidence: data.confidence,\n    draftReply: null\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        688
+      ],
+      "id": "aeed57e8-41df-4748-a58f-1ee5ecbac855",
+      "name": "Tag: Low Confidence"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nreturn [{\n  json: {\n    escalationReason: `Intent: ${data.intent}`,\n    senderEmail: data.senderEmail,\n    orderNumber: data.order_number,\n    customerMessage: $('Gmail Trigger').first().json.snippet,\n    intent: data.intent,\n    urgency: data.urgency,\n    sentiment: data.sentiment,\n    confidence: data.confidence,\n    draftReply: null\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        592,
+        656
+      ],
+      "id": "5d11100d-dcde-46fc-ae03-8618076c8904",
+      "name": "Tag: Complaint or Other"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nreturn [{\n  json: {\n    escalationReason: 'Guardrail violation: ' + data.guardrailViolations.join(', '),\n    senderEmail: data.senderEmail,\n    orderNumber: data.order_number,\n    customerMessage: $('Gmail Trigger').first().json.snippet,\n    intent: data.intent,\n    urgency: data.urgency,\n    sentiment: data.sentiment,\n    confidence: data.confidence,\n    draftReply: data.draftReply\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2320,
+        416
+      ],
+      "id": "a821bcee-6348-4a05-b91b-71de39f23a19",
+      "name": "Tag: Guardrail Failure"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1760,
+        640
+      ],
+      "id": "855134fd-e6ec-47d4-b510-811fdac00b2a",
+      "name": "Escalation Merge"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.5-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.5-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Escalation reason: {{ $json.escalationReason }}\nOrder number: {{ $json.orderNumber }}\nIntent: {{ $json.intent }}, Urgency: {{ $json.urgency }}, Sentiment: {{ $json.sentiment }}, Confidence: {{ $json.confidence }}\n\nCustomer message:\n{{ $json.customerMessage }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "systemMessage": "You are writing a brief handoff summary for a human support agent. Summarize the ticket in 2 to 3 sentences: what the customer wants, why this needs a human, and anything already known. Be concise and factual, no suggestions or commentary."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        1952,
+        656
+      ],
+      "id": "133cec53-1414-4963-8081-cb89020b373b",
+      "name": "Message a model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Ds8Vnb2A65deVYih",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const summaryText = $json.content?.parts?.[0]?.text ?? $json.text ?? 'Summary unavailable';\nconst source = $('Escalation Merge').first().json;\n\nreturn [{\n  json: {\n    ...source,\n    summary: summaryText.trim()\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2320,
+        656
+      ],
+      "id": "52ff971a-29df-4390-b1ef-9bbca22d911d",
+      "name": "Code in JavaScript4"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "<REDACTED_CHANNEL_ID>",
+          "mode": "list",
+          "cachedResultName": "support-escalations"
+        },
+        "text": "=🔴 *Ticket escalated to human* Reason: {{ $json.escalationReason }} From: {{ $json.senderEmail }} Order: {{ $json.orderNumber }} Intent: {{ $json.intent }} | Urgency: {{ $json.urgency }} | Sentiment: {{ $json.sentiment }} | Confidence: {{ $json.confidence }}  Summary: {{ $json.summary }}  Original message: {{ $json.customerMessage }}{{ $json.draftReply ? '\\n\\nFlagged draft, do NOT send as-is:\\n' + $json.draftReply : '' }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        2560,
+        656
+      ],
+      "id": "4b91d6aa-8bae-4063-9fc5-452c313568e2",
+      "name": "Send a message3",
+      "webhookId": "17c5ad97-f028-42ba-b5c6-4399b44944df",
+      "credentials": {
+        "slackApi": {
+          "id": "Poaw4VOoD8J3flRq",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Confidence Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Tag: Guardrail Failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confidence Gate": {
+      "main": [
+        [
+          {
+            "node": "Intent Router",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Tag: Low Confidence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intent Router": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message a model2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Tag: Complaint or Other",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model2": {
+      "main": [
+        [
+          {
+            "node": "Guardrail node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardrail node": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tag: Guardrail Failure": {
+      "main": [
+        [
+          {
+            "node": "Escalation Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tag: Complaint or Other": {
+      "main": [
+        [
+          {
+            "node": "Escalation Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Tag: Low Confidence": {
+      "main": [
+        [
+          {
+            "node": "Escalation Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Escalation Merge": {
+      "main": [
+        [
+          {
+            "node": "Message a model3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model3": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript4": {
+      "main": [
+        [
+          {
+            "node": "Send a message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "5b5bba48-1ed5-4148-88fd-2495aafbf9bc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "17fb194e1a62b94ff7fc4b0b96abcfc96817f608d49b85f0e77bdec96a00497c"
+  },
+  "nodeGroups": [],
+  "id": "ug9mOLBCdBZc0nZe",
+  "tags": []
+}
