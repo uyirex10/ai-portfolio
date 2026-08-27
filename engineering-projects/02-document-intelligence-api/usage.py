@@ -16,15 +16,16 @@ import os
 from dataclasses import dataclass
 from typing import Iterator
 
-# Deliberately unset by default. A cost-per-document figure is something this project
-# will quote to clients, and a plausible-looking number that was never checked is worse
-# than no number: it would be wrong silently, and it would be wrong in the README.
-# Set both to the current published rates for the model in use, in USD per million
-# tokens, and cost appears in every response and log row. Leave them unset and tokens
-# are still recorded in full - only the money is withheld.
+# Rates come from the environment rather than being baked in here, so changing model
+# or reacting to a price change is a config edit, not a code change. The real values
+# ship in .env.example - they are public list prices, not secrets:
 #
-#     DOCINTEL_PRICE_INPUT_PER_MTOK=0.10
-#     DOCINTEL_PRICE_OUTPUT_PER_MTOK=0.40
+#     DOCINTEL_PRICE_INPUT_PER_MTOK=0.25
+#     DOCINTEL_PRICE_OUTPUT_PER_MTOK=1.50
+#
+# Unset, tokens are still recorded in full and only the money is withheld. That is the
+# right failure: a cost-per-document figure gets quoted to clients, and a rate that was
+# never checked would be wrong silently, in the API response and in the README.
 #
 # One rate pair covers all calls. MAIN_MODEL and SECOND_PASS_MODEL default to the same
 # model; if they are ever pointed at different ones, this needs to become per-model.
