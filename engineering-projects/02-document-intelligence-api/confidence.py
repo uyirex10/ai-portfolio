@@ -49,6 +49,7 @@ AGREE = "agree"
 REWRITTEN = "rewritten"  # same value, different characters - the main pass normalized it
 MISSING = "missing"      # the second pass did not report this item
 CONFLICT = "conflict"    # the two passes contradict each other
+OMITTED = "omitted"      # the MAIN pass reported nothing where the second pass found something
 UNCHECKED = "unchecked"  # the cross-check could not run
 
 # REWRITTEN sits above CONFLICT deliberately. A value the main pass rewrote is
@@ -258,6 +259,26 @@ def _check_parties(extracted, second, findings):
 
 def _check_key_dates(extracted, second, findings):
     printed = {_norm(d.label): d for d in second.key_dates}
+
+    # key_dates carries no minimum, so the main pass returning nothing is a valid
+    # answer - a purely relative-dated contract has no calendar dates to report. But it
+    # is only valid if the second pass agrees there were none. If a verbatim reading
+    # DID find dates, the main pass dropped them, and there is no confidence score to
+    # lower because there is no field. Report it rather than let an omission be the one
+    # failure the cross-check cannot see.
+    if not extracted.key_dates:
+        if second.key_dates:
+            findings.append(Finding(
+                field="key_dates", item="(none extracted)", outcome=OMITTED,
+                main_pass="(no dates)",
+                second_pass="; ".join(
+                    f"{d.label}={d.value}" for d in second.key_dates
+                )[:200],
+                # No score moves: informational, so it must not register as a drop.
+                confidence_before=0.0, confidence_after=0.0,
+            ))
+        return
+
     for labeled in extracted.key_dates:
         seen = printed.get(_norm(labeled.label))
         if seen is None:

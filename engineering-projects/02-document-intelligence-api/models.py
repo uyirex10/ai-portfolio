@@ -192,19 +192,29 @@ class ExtractedContract(BaseModel):
         },
     )
 
-    # At least one party and at least one date: a document with neither is not a
-    # contract, so an empty list here means the extraction was wrong, not that the
-    # document was unusual. Letting it through would hand the caller a technically
-    # valid response that is useless.
+    # At least one party: a document binding nobody is not a contract, so an empty list
+    # here means the extraction was wrong rather than that the document was unusual.
+    # Letting it through would hand the caller a technically valid, useless response.
     parties: list[Party] = Field(
         min_length=1,
         description="Every entity bound by the agreement. At least one.",
     )
+    # Empty is legitimate, so this carries no minimum. A contract can express every
+    # date relatively - "forty-five days from signing", "eighteen months thereafter" -
+    # and never state an absolute calendar date at all. Requiring one entry made that
+    # document unrepresentable, so the model fabricated a date to satisfy the schema
+    # (observed live: an invented effective_date on a contract that had none). An
+    # honest empty list is worth more to the client than a plausible invention, and the
+    # required-vs-optional rule this schema follows points the same way: the concept
+    # can genuinely be absent from the document.
     key_dates: list[LabeledDate] = Field(
-        min_length=1,
+        default_factory=list,
         description=(
             "Dates the agreement turns on - effective, signing, expiration, and any "
-            "other dated milestone. At least one."
+            "other dated milestone - as absolute calendar dates. Empty when the "
+            'contract expresses its dates only relatively ("forty-five days from '
+            'signing"): that is a correct extraction, not a failed one. Never guess '
+            "a date to avoid returning an empty list."
         ),
     )
     # Required, but legitimately empty: plenty of agreements (NDAs, MSAs) state no

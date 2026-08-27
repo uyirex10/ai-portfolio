@@ -59,6 +59,12 @@ def make_pdf(lines: list[str]) -> bytes:
     return bytes(out)
 
 
+RELATIVE_TEXT = """CONSULTING AGREEMENT
+Executed by Vector Analytics LLP and Harbour Foods Inc.
+TERM. Takes effect thirty days after the date of signature and continues
+for eighteen months thereafter.
+PAYMENT. Invoices are settled within forty-five days of receipt."""
+
 CONTRACT_LINES = [
     "SUPPLY AGREEMENT",
     "Entered into on 15 January 2026 between Northwind Logistics Ltd.",
@@ -102,6 +108,21 @@ PROSE_DATE_JSON = json.dumps(
         ],
         "payment_terms": [],
         "payment_terms_confidence": 0.5,
+    }
+)
+
+
+# A contract whose dates are all relative - no absolute calendar date exists anywhere
+# in it, so an empty key_dates is the correct extraction.
+RELATIVE_DATES_JSON = json.dumps(
+    {
+        "parties": [
+            {"name": "Vector Analytics LLP", "confidence": 1.0},
+            {"name": "Harbour Foods Inc.", "confidence": 1.0},
+        ],
+        "key_dates": [],
+        "payment_terms": ["Invoices are settled within forty-five days of receipt"],
+        "payment_terms_confidence": 1.0,
     }
 )
 
@@ -164,6 +185,24 @@ def test_a_file_that_is_not_a_pdf_is_rejected():
 
 
 # ----------------------------------------------------------------- retry tests ---
+
+
+def test_relative_dates_only_document_yields_no_dates_and_no_fabrication():
+    """A contract stating only "forty-five days from signing" has no calendar date to
+    extract. key_dates carries no minimum precisely so this is representable: with one
+    required, the model invented a date to satisfy the schema. An empty list must
+    validate first time, with no retry and nothing made up."""
+    fake = FakeGenerator(RELATIVE_DATES_JSON)
+    with with_generator(fake):
+        result = extract_contract(RELATIVE_TEXT)
+
+    assert result.key_dates == []
+    assert result.renewal_date is None
+    assert len(fake.prompts) == 1, "an empty key_dates must not trigger the retry"
+    assert [p.name for p in result.parties] == [
+        "Vector Analytics LLP",
+        "Harbour Foods Inc.",
+    ]
 
 
 def test_valid_first_response_makes_exactly_one_call():

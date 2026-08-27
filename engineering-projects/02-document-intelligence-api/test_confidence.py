@@ -18,6 +18,7 @@ from confidence import (
     CONFLICT,
     MISSING,
     REWRITTEN,
+    OMITTED,
     UNCHECKED,
     CHECKS,
     SecondPass,
@@ -201,6 +202,25 @@ def test_payment_terms_both_silent_is_agreement():
 def test_payment_terms_prose_but_no_figures_is_missing():
     _, findings = cross_check(contract(terms=("Net 30",)), second(figures={}))
     assert outcome_for(findings, "payment_terms") == (MISSING, 0.5)
+
+
+def test_empty_key_dates_is_not_scored_when_both_passes_agree_there_are_none():
+    """The relative-dates case reaching the cross-check: nothing was claimed and
+    nothing was seen, so there is nothing to verify and no finding to raise."""
+    _, findings = cross_check(contract(dates=()), second(dates=()))
+    assert not [f for f in findings if f.field == "key_dates"]
+
+
+def test_main_pass_dropping_dates_the_second_pass_saw_is_reported():
+    """key_dates has no minimum any more, so an omission is now possible where it
+    previously could not be. It has no confidence score to lower, so it is reported
+    informationally rather than silently passing."""
+    _, findings = cross_check(contract(dates=()), second())
+    outcome, _ = outcome_for(findings, "key_dates")
+    assert outcome == OMITTED
+    finding = [f for f in findings if f.field == "key_dates"][0]
+    assert "effective_date" in finding.second_pass
+    assert not finding.lowered, "informational only - it must not read as a drop"
 
 
 def test_cross_check_never_raises_a_score():
