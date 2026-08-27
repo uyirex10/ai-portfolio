@@ -70,3 +70,40 @@ def require_api_key(x_api_key: str | None = Header(default=None)) -> str:
         },
         headers={"WWW-Authenticate": "ApiKey"},
     )
+
+
+# The admin page is a different privilege from extraction: it shows every client's
+# spend and every filename processed. An integrator's extract key must not open it, so
+# it has its own secret and is simply unavailable until one is configured.
+ADMIN_ENV_VAR = "DOCINTEL_ADMIN_KEY"
+
+
+def require_admin_key(
+    x_api_key: str | None = Header(default=None),
+    key: str | None = None,
+) -> str:
+    """Guard the admin page.
+
+    Accepts the secret from the X-API-Key header or a ?key= query parameter. The query
+    parameter exists because this page is opened in a browser, which cannot set a
+    header - it is a real trade-off, since query strings land in browser history and
+    proxy logs, and it is why this is a separate low-value secret rather than a
+    key that can also spend money.
+    """
+    expected = os.environ.get(ADMIN_ENV_VAR, "").strip()
+    if not expected:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "error": "not_found",
+                "detail": "The admin page is not enabled on this deployment.",
+            },
+        )
+    for candidate in (x_api_key, key):
+        if candidate and secrets.compare_digest(candidate, expected):
+            return "admin"
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail={"error": "unauthorized", "detail": "Missing or invalid admin key."},
+        headers={"WWW-Authenticate": "ApiKey"},
+    )

@@ -14,17 +14,19 @@ one rather than added when it is already too late.
 
 import logging
 import os
+import pathlib
 import time
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, File, Request, UploadFile, status
-from fastapi.responses import JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, ConfigDict, Field
 
 import config
 import requestlog
 import usage
-from auth import require_api_key
+from auth import require_admin_key, require_api_key
 from confidence import Finding
 from documents import DocumentError
 from extraction import ExtractionError
@@ -40,6 +42,10 @@ ENDPOINT = "/v1/extract"
 # scan we cannot read anyway, and reading it into memory first to find that out is how
 # a service gets taken down by a single upload.
 MAX_UPLOAD_BYTES = int(os.environ.get("DOCINTEL_MAX_UPLOAD_BYTES", 10 * 1024 * 1024))
+
+# Resolved against this file, not the working directory: uvicorn is not always
+# started from the project root, and in the container it certainly is not.
+templates = Jinja2Templates(directory=str(pathlib.Path(__file__).parent / "templates"))
 
 
 # ------------------------------------------------------------------- responses ---
@@ -269,3 +275,25 @@ def extract(
                 document_chars=result.characters,
             ),
         )
+
+
+@app.get(
+    "/admin",
+    response_class=HTMLResponse,
+    tags=["operations"],
+    summary="Operational view of recent extractions",
+    # Kept out of the OpenAPI spec on purpose. That document is the contract an
+    # integrating team builds against, and an internal page they cannot open is noise
+    # in it.
+    include_in_schema=False,
+)
+def admin(request: Request, _: str = Depends(require_admin_key)):
+    return templates.TemplateResponse(
+        request=request,
+        name="admin.html",
+        context={
+            "summary": requestlog.summary(),
+            "requests": requestlog.recent(limit=50),
+            "rate_limit": limiter.limit,
+        },
+    )

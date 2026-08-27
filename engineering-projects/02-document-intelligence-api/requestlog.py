@@ -137,20 +137,36 @@ def summary() -> dict:
                    SUM(prompt_tokens + output_tokens)              AS total_tokens,
                    -- Two calls is the no-retry baseline: one extraction, one
                    -- cross-check. Anything above that means the retry fired.
-                   SUM(CASE WHEN model_calls > 2 THEN 1 ELSE 0 END) AS retried
+                   SUM(CASE WHEN model_calls > 2 THEN 1 ELSE 0 END) AS retried,
+                   SUM(CASE WHEN fields_lowered > 0 THEN 1 ELSE 0 END) AS with_lowered
             FROM requests
             """
         ).fetchone()
+        # Percentiles over successful requests only. A 401 never reached the model and
+        # returns in a millisecond; mixing those in would drag the latency a client
+        # actually experiences down towards zero and flatter the number.
         latencies = [
             row["latency_ms"]
             for row in connection.execute(
-                "SELECT latency_ms FROM requests ORDER BY latency_ms"
+                "SELECT latency_ms FROM requests WHERE status_code = 200 "
+                "ORDER BY latency_ms"
+            )
+        ]
+        statuses = [
+            dict(row)
+            for row in connection.execute(
+                "SELECT status_code, COUNT(*) AS count FROM requests "
+                "GROUP BY status_code ORDER BY status_code"
             )
         ]
 
     result = dict(totals) if totals else {}
     result["p95_latency_ms"] = _percentile(latencies, 95)
     result["p50_latency_ms"] = _percentile(latencies, 50)
+    result["by_status"] = statuses
+    # Sample size for the percentiles, so the page can decline to show a p95 that is
+    # really just the slowest of four requests.
+    result["latency_samples"] = len(latencies)
     return result
 
 

@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Document Intelligence &mdash; operations</title>
+<style>
+  /* Light is the base; dark is a selected set of steps against the dark surface,
+     not an automatic inversion. */
+  :root {
+    color-scheme: light;
+    --plane:      #f9f9f7;
+    --surface:    #fcfcfb;
+    --border:     #e2e2dd;
+    --text:       #0b0b0b;
+    --muted:      #52514e;
+    --faint:      #83827d;
+    --good:       #0ca30c;
+    --warning:    #fab219;
+    --critical:   #d03b3b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --plane:    #0d0d0d;
+      --surface:  #1a1a19;
+      --border:   #34342f;
+      --text:     #ffffff;
+      --muted:    #c3c2b7;
+      --faint:    #8f8e85;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 2rem 1.5rem 4rem;
+    background: var(--plane);
+    color: var(--text);
+    font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+
+  header { margin-bottom: 2rem; }
+  h1 { font-size: 1.25rem; font-weight: 600; margin: 0 0 .25rem; }
+  .sub { color: var(--muted); font-size: .875rem; margin: 0; }
+
+  /* The hero figure: cost per document is the number this whole project exists to
+     be able to state. Exactly one per view, proportional figures at display size. */
+  .hero {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 1rem;
+  }
+  .hero .label { color: var(--muted); font-size: .8125rem; margin-bottom: .35rem; }
+  .hero .value { font-size: 3rem; font-weight: 600; line-height: 1; letter-spacing: -.02em; }
+  .hero .note { color: var(--faint); font-size: .8125rem; margin-top: .6rem; }
+
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: .75rem;
+    margin-bottom: 2rem;
+  }
+  .tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: .9rem 1rem;
+  }
+  .tile .label { color: var(--muted); font-size: .75rem; margin-bottom: .3rem; }
+  .tile .value { font-size: 1.5rem; font-weight: 600; line-height: 1.1; }
+  .tile .value.small { font-size: 1.05rem; font-weight: 500; }
+
+  h2 { font-size: .9375rem; font-weight: 600; margin: 0 0 .6rem; }
+
+  .scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; background: var(--surface); }
+  th, td {
+    text-align: left;
+    padding: .5rem .75rem;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  th {
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+  tr:last-child td { border-bottom: none; }
+  /* Tabular figures in columns only, where digits must align vertically. */
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* Status never reads by colour alone - the code itself is the label, and the dot
+     is a redundant second channel. */
+  .status { display: inline-flex; align-items: center; gap: .4rem; font-variant-numeric: tabular-nums; }
+  .dot { width: .5rem; height: .5rem; border-radius: 50%; flex: none; }
+  .s-good     .dot { background: var(--good); }
+  .s-warning  .dot { background: var(--warning); }
+  .s-critical .dot { background: var(--critical); }
+
+  .empty { color: var(--muted); padding: 2rem; text-align: center; }
+  .foot { color: var(--faint); font-size: .8125rem; margin-top: 1.5rem; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .95em; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Document Intelligence &mdash; operations</h1>
+    <p class="sub">
+      Last {{ requests|length }} request{{ '' if requests|length == 1 else 's' }},
+      newest first. Rate limit {{ rate_limit }}/min per client.
+    </p>
+  </header>
+
+  {% set s = summary %}
+  {% set total = s.requests or 0 %}
+
+  <div class="hero">
+    <div class="label">Mean cost per document</div>
+    <div class="value">
+      {%- if s.mean_cost is not none -%}
+        ${{ '%.5f'|format(s.mean_cost) }}
+      {%- else -%}
+        &mdash;
+      {%- endif -%}
+    </div>
+    <div class="note">
+      {% if s.mean_cost is not none %}
+        {{ '{:,}'.format((1 / s.mean_cost)|round|int) }} documents per $1.00 &middot;
+        ${{ '%.4f'|format(s.total_cost) }} spent across {{ total }} request{{ '' if total == 1 else 's' }}
+      {% else %}
+        Pricing not configured &mdash; set DOCINTEL_PRICE_INPUT_PER_MTOK and
+        DOCINTEL_PRICE_OUTPUT_PER_MTOK to report cost. Tokens are recorded either way.
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="tiles">
+    <div class="tile">
+      <div class="label">Requests</div>
+      <div class="value">{{ total }}</div>
+    </div>
+    <div class="tile">
+      <div class="label">Succeeded</div>
+      <div class="value">
+        {{ s.succeeded or 0 }}{% if total %}
+          <span style="font-size:.8rem;font-weight:400;color:var(--muted)">
+            ({{ ((s.succeeded or 0) / total * 100)|round|int }}%)
+          </span>
+        {% endif %}
+      </div>
+    </div>
+    <div class="tile">
+      <div class="label">p50 latency</div>
+      <div class="value">{{ (s.p50_latency_ms ~ ' ms') if s.p50_latency_ms is not none else '—' }}</div>
+    </div>
+    <div class="tile">
+      <div class="label">p95 latency</div>
+      {# Below ~20 samples a p95 is just the slowest request wearing a percentile's
+         name. Say so rather than print a figure that invites being quoted. #}
+      <div class="value {{ 'small' if s.latency_samples < 20 else '' }}">
+        {% if s.p95_latency_ms is none %}
+          &mdash;
+        {% elif s.latency_samples < 20 %}
+          {{ s.p95_latency_ms }} ms<span style="font-size:.75rem;font-weight:400;color:var(--muted)">
+            &nbsp;n={{ s.latency_samples }}</span>
+        {% else %}
+          {{ s.p95_latency_ms }} ms
+        {% endif %}
+      </div>
+    </div>
+    <div class="tile">
+      <div class="label">Retries fired</div>
+      <div class="value">{{ s.retried or 0 }}</div>
+    </div>
+    <div class="tile">
+      <div class="label">Confidence lowered</div>
+      <div class="value">{{ s.with_lowered or 0 }}</div>
+    </div>
+    <div class="tile">
+      <div class="label">Tokens</div>
+      <div class="value">
+        {%- set t = s.total_tokens or 0 -%}
+        {%- if t >= 1000 %}{{ '%.1f'|format(t / 1000) }}K{% else %}{{ t }}{% endif -%}
+      </div>
+    </div>
+    <div class="tile">
+      <div class="label">By status</div>
+      <div class="value small">
+        {% for row in s.by_status %}{{ row.status_code }}&times;{{ row.count }}{{ ' · ' if not loop.last }}{% endfor %}
+        {%- if not s.by_status %}&mdash;{% endif -%}
+      </div>
+    </div>
+  </div>
+
+  <h2>Recent extractions</h2>
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Time (UTC)</th>
+          <th>Client</th>
+          <th>File</th>
+          <th>Status</th>
+          <th class="num">Latency</th>
+          <th class="num">Calls</th>
+          <th class="num">Tokens</th>
+          <th class="num">Cost</th>
+          <th class="num">Chars</th>
+          <th class="num">Lowered</th>
+          <th>Outcome</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in requests %}
+        <tr>
+          <td>{{ r.timestamp|replace('T', ' ')|replace('+00:00', '') }}</td>
+          <td>{{ r.client }}</td>
+          <td>{{ r.filename or '—' }}</td>
+          <td>
+            {% if r.status_code == 200 %}{% set cls = 's-good' %}
+            {% elif r.status_code >= 500 %}{% set cls = 's-critical' %}
+            {% else %}{% set cls = 's-warning' %}{% endif %}
+            <span class="status {{ cls }}"><span class="dot"></span>{{ r.status_code }}</span>
+          </td>
+          <td class="num">{{ r.latency_ms }} ms</td>
+          <td class="num">{{ r.model_calls }}</td>
+          <td class="num">{{ r.prompt_tokens + r.output_tokens }}</td>
+          <td class="num">{{ '$%.5f'|format(r.cost_usd) if r.cost_usd is not none else '—' }}</td>
+          <td class="num">{{ r.document_chars if r.document_chars is not none else '—' }}</td>
+          <td class="num">{{ r.fields_lowered if r.fields_lowered is not none else '—' }}</td>
+          <td>{{ r.error_kind or '—' }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="11" class="empty">No requests logged yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <p class="foot">
+    Two model calls is the baseline for one document &mdash; one extraction, one
+    cross-check. Three means the retry fired. <strong>Lowered</strong> counts fields
+    where the second pass disagreed with the first; it flags unverified rewriting, not
+    proven error. The log is stored in SQLite and resets when the instance restarts.
+  </p>
+
+</div>
+</body>
+</html>

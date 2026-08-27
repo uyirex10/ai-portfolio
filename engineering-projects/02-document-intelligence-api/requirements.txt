@@ -1,7 +1,7 @@
 fastapi
- uvicorn
-  pydantic
-   google-genai
-    pdfplumber
-     python-multipart
-      jinja2
+uvicorn
+pydantic
+google-genai
+pdfplumber
+python-multipart
+jinja2
