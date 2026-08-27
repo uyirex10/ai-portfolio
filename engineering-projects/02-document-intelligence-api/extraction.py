@@ -17,6 +17,7 @@ will not satisfy it on the fifth attempt either - it will just cost five times a
 from google.genai import types
 from pydantic import ValidationError
 
+import usage
 from config import MAIN_MODEL, TEMPERATURE, get_client
 from models import ExtractedContract
 
@@ -100,6 +101,7 @@ def _generate(prompt: str) -> str:
             temperature=TEMPERATURE,
         ),
     )
+    usage.record(response)
     return (response.text or "").strip()
 
 

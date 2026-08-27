@@ -39,6 +39,7 @@ from datetime import date
 from google.genai import types
 from pydantic import BaseModel, ConfigDict, Field
 
+import usage
 from config import SECOND_PASS_MODEL, TEMPERATURE, get_client
 from models import CRITICAL_FIELDS, ExtractedContract
 
@@ -145,6 +146,7 @@ def second_pass(text: str) -> SecondPass:
             temperature=TEMPERATURE,
         ),
     )
+    usage.record(response)
     return SecondPass.model_validate_json((response.text or "").strip())
 
 
