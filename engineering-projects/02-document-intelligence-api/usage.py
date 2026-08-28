@@ -12,9 +12,10 @@ where each request runs in its own thread or task and gets its own context.
 
 import contextlib
 import contextvars
-import os
 from dataclasses import dataclass
 from typing import Iterator
+
+import config
 
 # Rates come from the environment rather than being baked in here, so changing model
 # or reacting to a price change is a config edit, not a code change. The real values
@@ -30,9 +31,11 @@ from typing import Iterator
 # One rate pair covers all calls. MAIN_MODEL and SECOND_PASS_MODEL default to the same
 # model; if they are ever pointed at different ones, this needs to become per-model.
 def _rate(name: str) -> float | None:
-    raw = os.environ.get(name)
+    raw = config.env(name)
+    if not raw:
+        return None
     try:
-        return float(raw) if raw else None
+        return float(raw)
     except ValueError:
         return None
 

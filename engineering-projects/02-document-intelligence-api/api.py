@@ -41,7 +41,7 @@ ENDPOINT = "/v1/extract"
 # Contracts are text, not media. Anything past this is either not a contract or is a
 # scan we cannot read anyway, and reading it into memory first to find that out is how
 # a service gets taken down by a single upload.
-MAX_UPLOAD_BYTES = int(os.environ.get("DOCINTEL_MAX_UPLOAD_BYTES", 10 * 1024 * 1024))
+MAX_UPLOAD_BYTES = config.env_int("DOCINTEL_MAX_UPLOAD_BYTES", 10 * 1024 * 1024)
 
 # Resolved against this file, not the working directory: uvicorn is not always
 # started from the project root, and in the container it certainly is not.

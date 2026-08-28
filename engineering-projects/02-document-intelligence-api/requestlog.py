@@ -16,14 +16,15 @@ should be shipped off-box.
 """
 
 import contextlib
-import os
 import pathlib
 import sqlite3
 import threading
 from datetime import datetime, timezone
 from typing import Iterator
 
-DB_PATH = pathlib.Path(os.environ.get("DOCINTEL_LOG_DB", "requests.db"))
+import config
+
+DB_PATH = pathlib.Path(config.env("DOCINTEL_LOG_DB", "requests.db"))
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS requests (

@@ -13,16 +13,14 @@ this needs to move to Redis - until then, more instances silently multiply the l
 """
 
 import collections
-import os
 import threading
 import time
 
+import config
+
 
 def _limit() -> int:
-    try:
-        return int(os.environ.get("DOCINTEL_RATE_LIMIT_PER_MINUTE", "10"))
-    except ValueError:
-        return 10
+    return config.env_int("DOCINTEL_RATE_LIMIT_PER_MINUTE", 10)
 
 
 WINDOW_SECONDS = 60
