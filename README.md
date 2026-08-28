@@ -34,12 +34,13 @@ Applied AI/ML systems: RAG, agents, and evaluation-driven engineering, built end
 | # | Project | Status | Summary |
 |---|---------|--------|---------|
 | 1 | Internal Knowledge Assistant: RAG Done Properly | ✅ Done | Grounded document QA over 60 real legal contracts with page-level citations. Naive baseline evolved through hand-verified eval methodology, reranking, and structure-aware chunking to 86% retrieval hit rate and zero hallucinated answers, up from 70%/98% naive. Two-layer refusal design, hybrid search evaluated and rejected with real evidence, served via FastAPI and Streamlit. |
+| 2 | Document Intelligence API | ✅ Done | Contract PDF in, typed JSON out with a confidence score per field, at ~$0.001 per document. Schema-constrained extraction with a bounded retry that feeds the actual validation error back into the prompt. Confidence uses four discrete bands after a measured finding that a continuous scale pins every score at one value regardless of input quality; an independent verbatim second pass then lowers any field the two passes disagree on. API-key auth, per-client sliding-window rate limiting, and cost/latency logged per call behind a versioned `/v1/` route, plus an operations page over the log. 55 offline tests. |
 
 ## Tech stack
 
 **Automation:** n8n (local, no Docker, via nvm-windows), Python, Gemini API, Google Workspace APIs, Slack API
 
-**Engineering:** Python, FastAPI, Streamlit, Qdrant, Gemini API, Cohere
+**Engineering:** Python, FastAPI, Pydantic, Streamlit, Qdrant, Gemini API, Cohere, pdfplumber, SQLite, Docker
 
 **Other:** Git/GitHub, JSON workflow exports for reproducibility
 
