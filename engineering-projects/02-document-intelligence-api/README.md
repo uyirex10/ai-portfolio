@@ -182,6 +182,33 @@ docker run -p 8000:8000 --env-file .env docintel
 `PORT` is honoured when set and defaults to 8000, so the same image runs locally and on
 Render unchanged.
 
+### Configuration
+
+Every setting is an environment variable. `.env.example` lists them; blank means "not
+configured" everywhere, and the default applies.
+
+| Variable | Default | Notes |
+|---|---|---|
+| `GEMINI_API_KEY` | — | Required. |
+| `DOCINTEL_API_KEYS` | — | Required. `name:secret` pairs, comma separated: `procurement:sk_live_abc,internal:sk_test_def`. The **name** is a label that appears in the request log; the **secret** is what the caller sends in `X-API-Key`. Unset, every request is refused. |
+| `DOCINTEL_ADMIN_KEY` | — | Guards `/admin`. A separate secret from the extract keys, since the page shows every client's spend. Unset, `/admin` returns 404 and is simply not enabled. |
+| `DOCINTEL_PRICE_INPUT_PER_MTOK` | — | USD per million input tokens. Unset, cost reports `null` and tokens are still recorded. |
+| `DOCINTEL_PRICE_OUTPUT_PER_MTOK` | — | USD per million output tokens. |
+| `DOCINTEL_RATE_LIMIT_PER_MINUTE` | `10` | Per client. Every accepted request makes at least two model calls, so this is cost control before it is abuse control. |
+| `DOCINTEL_MAX_UPLOAD_BYTES` | `10485760` | Refused before the file is read into memory. |
+| `DOCINTEL_LOG_DB` | `requests.db` | SQLite request log. |
+| `DOCINTEL_MAIN_MODEL` | `gemini-3.1-flash-lite` | Must be a real environment variable — see below. |
+| `DOCINTEL_SECOND_PASS_MODEL` | same as main | Leave unset. The second pass is cheap by virtue of a smaller schema and prompt, not a smaller model. |
+
+An entry in `DOCINTEL_API_KEYS` with no colon is skipped silently, so a bare
+`DOCINTEL_API_KEYS=sk_live_abc` parses to zero keys and the service then refuses
+everything while looking configured. That is the first thing to check on a blanket 401.
+
+The two `*_MODEL` variables are read when the module is imported, which happens before
+`.env` is loaded at application startup — so a value placed in `.env` will not reach
+them and the default wins. Set them in the environment proper, or leave them alone.
+Every other setting reads `.env` normally.
+
 ### Deploying to Render
 
 New Web Service → Docker → point at this repo. Set `GEMINI_API_KEY`,
