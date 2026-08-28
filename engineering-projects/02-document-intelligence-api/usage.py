@@ -1,8 +1,8 @@
 """Token and cost accounting for one request.
 
-The brief asks what a document costs to run, so tokens are counted across every model
-call a request makes - both extraction attempts if the retry fires, plus the
-cross-check pass - not just the first one.
+Cost per document is a figure this service reports and gets priced on, so tokens are
+counted across every model call a request makes - both extraction attempts if the retry
+fires, plus the cross-check pass - not just the first one.
 
 Collected through a ContextVar rather than by threading a parameter through every
 function. That keeps the generation calls returning plain strings, which is what makes

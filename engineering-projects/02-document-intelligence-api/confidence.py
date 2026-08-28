@@ -1,4 +1,4 @@
-"""Phase 3: the second-pass cross-check.
+"""The second-pass cross-check.
 
 Why this exists in the shape it does. A measured trial established that the main
 pass's self-reported confidence tracks document quality only coarsely, and does not
@@ -154,7 +154,11 @@ def second_pass(text: str) -> SecondPass:
 
 
 class Finding(BaseModel):
-    """One field's cross-check result. Serializable, for the Phase 5 admin page."""
+    """One field's cross-check result.
+
+    Serializable so it can be returned to the caller, written to the request log, and
+    rendered on the operations page.
+    """
 
     model_config = ConfigDict(extra="forbid")
 

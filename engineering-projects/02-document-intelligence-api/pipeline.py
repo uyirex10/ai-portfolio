@@ -1,8 +1,8 @@
 """The whole extraction path, composed: PDF -> text -> extract (+retry) -> cross-check.
 
 Kept separate from the FastAPI route so the pipeline can be run and tested without a
-web server, and so Phase 4's route stays what it should be - auth, rate limiting,
-status codes - rather than business logic wearing a decorator.
+web server, and so the route stays what it should be - auth, rate limiting, status
+codes - rather than business logic wearing a decorator.
 """
 
 import pathlib

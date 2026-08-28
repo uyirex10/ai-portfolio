@@ -18,21 +18,20 @@ from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-# Cross-checked by the cheap second pass in Phase 3; disagreement lowers confidence.
+# Cross-checked by the independent second pass; disagreement lowers confidence.
 # These are the fields where being wrong costs real money or a missed deadline -
 # paying the wrong entity, missing an auto-renewal window, missing a discount cutoff.
 # penalty_clauses stays out: it is the one money-adjacent field whose value is a whole
 # negotiated condition, too long and too variably phrased for a cheap pass to compare
 # usefully.
 #
-# NOTE for Phase 3: payment_terms cannot be cross-checked by string equality. It is
-# free prose, so two extractions can both be correct and share almost no characters -
-# "Net 30" against "payment due within 30 days" is agreement, not disagreement, and a
-# string comparison would read it as the latter and wrongly drop the confidence. The
-# comparison has to be on meaning: normalize both passes to the underlying obligation
-# (net days, discount percent and window, currency) and compare that, or have the
-# second pass judge equivalence directly. The score it moves is the field-level
-# payment_terms_confidence, since the terms themselves are bare strings.
+# payment_terms is the awkward one: it is free prose, so it cannot be compared by
+# string equality. Two extractions can both be correct and share almost no characters -
+# "Net 30" against "payment due within 30 days" is agreement, and a string comparison
+# would read it as disagreement and wrongly drop the confidence. The comparison is on
+# meaning instead: both passes reduce to the underlying figures. The score it moves is
+# the field-level payment_terms_confidence, since the terms themselves are bare
+# strings with nowhere to hang one.
 CRITICAL_FIELDS = ("parties", "key_dates", "payment_terms", "renewal_date")
 
 # Defined once rather than repeated on four fields, so the bounds cannot drift apart.
@@ -113,9 +112,9 @@ class LabeledDate(BaseModel):
     )
     # A strict date, not a string. Contracts do express dates as prose ("thirty days
     # after the Effective Date"), and that prose fails validation here on purpose:
-    # that failure is exactly what the Phase 2 retry loop exists to catch and what
-    # the structured 422 exists to report. Accepting a bare string instead would push
-    # the parsing onto the caller and break the brief's promise of clean JSON.
+    # that failure is exactly what the validation-feedback retry exists to catch and
+    # what the structured 422 exists to report. Accepting a bare string instead would
+    # push date parsing onto every caller, which is the opposite of returning clean JSON.
     value: date = Field(description="The date itself, ISO 8601 (YYYY-MM-DD).")
     confidence: Confidence
 

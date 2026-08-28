@@ -50,8 +50,9 @@ def env_int(name: str, default: int) -> int:
 MAIN_MODEL = env("DOCINTEL_MAIN_MODEL", "gemini-3.1-flash-lite")
 SECOND_PASS_MODEL = env("DOCINTEL_SECOND_PASS_MODEL", MAIN_MODEL)
 
-# Deterministic by default. Confirmed deterministic in practice during the Phase 3
-# prompt trials: three repetitions of every cell returned byte-identical scores.
+# Deterministic by default, and deterministic in practice: repeated identical requests
+# at this temperature returned byte-identical confidence scores across three runs of
+# every case measured.
 TEMPERATURE = 0.0
 
 

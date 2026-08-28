@@ -1,12 +1,12 @@
 """Per-request log of cost, latency and outcome.
 
-This is the file that turns "it works" into "I know what it costs to run", which the
-brief wants for pricing. Every request is written here, including the failures - a 422
-still burned two model calls, and a cost figure that counts only successes understates
-the real number.
+This is the file that turns "it works" into "I know what it costs to run", without
+which the service cannot be priced. Every request is written here, including the
+failures - a 422 still burned two model calls, and a cost figure that counts only
+successes understates the real number.
 
-SQLite, from the standard library. The Phase 5 admin page needs to aggregate (p95
-latency, mean cost, retry rate) and a JSONL file would mean loading and parsing the
+SQLite, from the standard library. The operations page aggregates over this (p95
+latency, mean cost, retry rate), and a JSONL file would mean loading and parsing the
 whole history to answer that. No new dependency either way.
 
 One deployment caveat: on Render's default filesystem this database is ephemeral and
@@ -126,7 +126,7 @@ def recent(limit: int = 50) -> list[dict]:
 
 
 def summary() -> dict:
-    """Aggregates for the admin page and the README's results section."""
+    """Aggregates for the operations page: cost, latency spread and retry rate."""
     with _connect() as connection:
         totals = connection.execute(
             """
