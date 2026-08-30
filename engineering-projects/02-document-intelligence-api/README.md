@@ -2,6 +2,10 @@
 
 POST a contract PDF, get back typed JSON with a confidence score per field.
 
+**Live at https://document-intelligence-api-6p4x.onrender.com** — the interactive API
+docs at [`/docs`](https://document-intelligence-api-6p4x.onrender.com/docs) are publicly
+browsable, no key needed to read them. Extraction itself needs an API key.
+
 ## Problem
 
 A procurement team, in their words:
