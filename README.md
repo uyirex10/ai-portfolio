@@ -19,7 +19,7 @@ Workflow automation, data pipelines, and AI-powered business tooling, mostly bui
 | 1 | Invoice Extraction Pipeline | ✅ Done | Gmail trigger → Gemini vision extraction → validation (line items + VAT vs. total) → Google Sheets logging. Tested on 13 real invoices. |
 | 2 | CRM Lead Routing and Data Sync Hub | ✅ Done | Three lead sources (webhook, Airtable, Google Sheets) normalized, deduplicated, cleaned with Gemini, scored Hot/Warm/Junk, and routed to HubSpot and Slack. Includes retry logic, a dead-letter queue, and a scheduled Slack digest for failures. |
 | 3 | Support Inbox Triage & Reply Drafter | ✅ Done | Classifies support tickets by intent, urgency, and sentiment; auto-resolves routine order-status questions with data grounded in a real order lookup; holds returns for human approval; escalates complaints and anything uncertain with an AI-generated summary. Two-layer guardrail (prompt instruction plus a deterministic code check, scoped per branch) blocks any drafted promise on refunds, compensation, or unverified delivery dates before it can reach a customer. 36% deflection on a deliberately edge-case-heavy 25-ticket stress test. |
-| 4 | | 🔲 Not started | |
+| 4 | AI Voice Receptionist for Bookings | ✅ Done | Real-time voice AI receptionist for phone-based appointment booking, the portfolio's first latency-constrained system. Sync/async split keeps live tool calls fast while a re-verify-before-write step closes the double-booking race condition; screens and escalates emergencies and angry callers via live call transfer. 20 real adversarial phone calls tested against the live system, not simulated; findings, including one unresolved confirmation-bypass edge case, documented honestly in the project README. |
 | 5 | | 🔲 Not started | |
 | 6 | | 🔲 Not started | |
 | 7 | | 🔲 Not started | |
@@ -38,7 +38,7 @@ Applied AI/ML systems: RAG, agents, and evaluation-driven engineering, built end
 
 ## Tech stack
 
-**Automation:** n8n (local, no Docker, via nvm-windows), Python, Gemini API, Google Workspace APIs, Slack API
+**Automation:** n8n (local, no Docker, via nvm-windows), Python, Gemini API, Google Workspace APIs, Slack API, Vapi.ai, Google Calendar API, Twilio, Airtable
 
 **Engineering:** Python, FastAPI, Pydantic, Streamlit, Qdrant, Gemini API, Cohere, pdfplumber, SQLite, Docker
 
@@ -50,7 +50,7 @@ Every project folder includes:
 
 - **README.md**: problem, architecture, build steps, testing, known limitations, results
 - **workflow-export.json** (automation projects): the actual n8n workflow, exportable and reproducible, credentials and identifying IDs redacted
-- **sample-data/**: anonymized or synthetic examples only, never real client data
+- **sample-data/**: anonymized or synthetic examples only, never real client data, included where the project has real input files to demonstrate against
 - **screenshots/**: workflow canvas and result screenshots
 
 ## Connect
