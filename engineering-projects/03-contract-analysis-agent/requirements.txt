@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pdfplumber
+pymupdf
+pyyaml
+pytest
+anthropic
+python-dotenv
+pydantic
+datasets
