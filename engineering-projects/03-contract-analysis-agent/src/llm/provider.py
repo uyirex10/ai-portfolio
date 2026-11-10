@@ -112,16 +112,30 @@ def _classify_error(exc: Exception) -> Exception:
 
 
 class GeminiProvider(LLMProvider):
+    """Client construction is deliberately lazy (on first real `_call`,
+    not in `__init__`): if every prompt a run needs is already in the
+    disk cache, `complete()` never calls `_call()` at all, so this
+    provider can be constructed and used entirely offline, with no API
+    key, as long as the cache covers the run -- which is exactly what
+    scripts/demo.py relies on."""
+
     name = "gemini"
     default_model = "gemini-2.0-flash"
 
     def __init__(self, api_key: Optional[str] = None):
-        from google import genai
-        self._client = genai.Client(api_key=api_key or os.environ.get("GEMINI_API_KEY"))
+        self._api_key = api_key
+        self._client = None
+
+    def _ensure_client(self):
+        if self._client is None:
+            from google import genai
+            self._client = genai.Client(api_key=self._api_key or os.environ.get("GEMINI_API_KEY"))
+        return self._client
 
     def _call(self, model: str, prompt: str) -> str:
         try:
-            resp = self._client.models.generate_content(model=model, contents=prompt)
+            client = self._ensure_client()
+            resp = client.models.generate_content(model=model, contents=prompt)
             return resp.text or ""
         except Exception as e:
             classified = _classify_error(e)
@@ -131,16 +145,25 @@ class GeminiProvider(LLMProvider):
 
 
 class AnthropicProvider(LLMProvider):
+    """See GeminiProvider's docstring -- same lazy-client rationale."""
+
     name = "anthropic"
     default_model = "claude-haiku-4-5-20251001"
 
     def __init__(self, api_key: Optional[str] = None):
-        import anthropic
-        self._client = anthropic.Anthropic(api_key=api_key or os.environ.get("ANTHROPIC_API_KEY"))
+        self._api_key = api_key
+        self._client = None
+
+    def _ensure_client(self):
+        if self._client is None:
+            import anthropic
+            self._client = anthropic.Anthropic(api_key=self._api_key or os.environ.get("ANTHROPIC_API_KEY"))
+        return self._client
 
     def _call(self, model: str, prompt: str) -> str:
         try:
-            resp = self._client.messages.create(
+            client = self._ensure_client()
+            resp = client.messages.create(
                 model=model, max_tokens=4096, messages=[{"role": "user", "content": prompt}],
             )
             return "".join(getattr(block, "text", "") for block in resp.content)
