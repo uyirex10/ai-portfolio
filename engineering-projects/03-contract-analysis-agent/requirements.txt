@@ -4,7 +4,11 @@ pdfplumber
 pymupdf
 pyyaml
 pytest
+pytest-asyncio
+hypothesis
 anthropic
+google-genai
 python-dotenv
 pydantic
 datasets
+httpx

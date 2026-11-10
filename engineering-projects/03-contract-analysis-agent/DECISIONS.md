@@ -30,6 +30,22 @@ sometimes a label and sometimes just more disclaimer prose).
 **segment.py and extract.py are frozen as of this decision. Tag:
 `splitter-v1`.**
 
+## Stage B: sealed test run (one time only)
+
+Ran `scripts/run_sealed_test.py` once against `data_splits/test_contracts.txt`
+(154 of 157 contracts readable) with the frozen splitter (rule A).
+Aggregates only -- no case-level inspection, logged here and in
+`reports/splitter_test_results.md`.
+
+Test: contain% 98.3%, cut% 1.1%, median clauses/contract 20.
+Dev (for comparison, same harness): contain% 98.3%, cut% 1.6%.
+
+Test is not worse than dev on either headline number -- no sign of
+having tuned to dev's idiosyncrasies. Cap On Liability specifically:
+test cut% 1.6% vs dev 6.6% (test is better here, not worse). No
+re-tuning was done in response to this; the rule says test results are
+reported, not acted on.
+
 ## Stage C: 8 clause types (pre-registered rule, mechanical)
 
 Rule: must-include Cap On Liability, Termination For Convenience,
