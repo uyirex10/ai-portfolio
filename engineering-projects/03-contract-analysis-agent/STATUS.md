@@ -16,8 +16,13 @@ Last updated: 2026-11-10 (Stage A complete, frozen)
 ## In progress
 - Stage B (sealed test run) -- script ready (`scripts/run_sealed_test.py`), not yet executed.
 
+## Done (continued)
+- **Stage B (complete):** sealed test run, once. contain% 98.3%, cut% 1.1% -- consistent with dev, no tuning after seeing it. `reports/splitter_test_results.md`.
+- **Stage D (code complete, live calls blocked):** `src/llm/provider.py` (Gemini default/Anthropic pluggable, disk cache, backoff, quota split), `classify.py` (batched multi-label), `extract_values.py` (pydantic schema + grounding check). All mocked-provider tests pass (27 tests across provider/classify/extract_values).
+- **Stage E (complete):** `playbook.yaml` (1 rule per clause type, placeholder thresholds labeled as such), `src/rules/` (engine.py, rules.py, rule_types.py -- pure code, zero LLM imports, enforced by tests/test_llm_isolation.py). 30 tests incl. a hypothesis property test: no absent/all-None input ever yields green.
+
 ## Next
-- Stage B -> C (done, see DECISIONS.md) -> D (LLM provider built, not yet wired to classify/extract) -> E (rules) -> F (memos) -> G (eval) -> H (ship).
+- Stage F (memos) -> G (eval) -> H (ship).
 
 ## Stage C (done)
 8 clause types chosen by pre-registered mechanical rule: Cap On Liability, Termination For Convenience, Notice Period To Terminate Renewal, Governing Law (must-include), Agreement Date, Expiration Date, Effective Date, Audit Rights (fill by frequency). See DECISIONS.md for the full candidate table and the "3 date fields" observation.
@@ -27,8 +32,8 @@ Last updated: 2026-11-10 (Stage A complete, frozen)
 - `tests/test_llm_isolation.py`: global-rule enforcement test (src/rules/ may not import anthropic/google/openai/requests). Passes trivially until src/rules/ exists (Stage E).
 - Not yet done: classify/extract pydantic schemas, batching, grounding check, mocked-provider tests.
 
-## Known blocker
-- No LLM API key found in `.env` or shell env (checked once; further credential inspection is sandboxed by the harness). Code, caching, and mocked tests proceed regardless; live calls against real contracts will be flagged clearly when/if attempted and blocked.
+## Known blocker (confirmed, not guessed)
+- Confirmed by actually instantiating `GeminiProvider` and calling `.complete()`: raises `ValueError: No API key was provided`. `GEMINI_API_KEY` and `ANTHROPIC_API_KEY` are both unset. No real LLM call has succeeded or will succeed this session. Code, caching, and mocked-provider tests proceed regardless (all passing). Every stage from here that needs a live call (Stage D real classify/extract on real contracts, Stage F real redlines, Stage G real precision/recall) will be built in full but will report this blocker explicitly rather than fabricating numbers. scripts/demo.py will use hand-authored, clearly-labeled synthetic cache entries (not real model output) so the pipeline wiring is still demonstrable end to end.
 
 ## Verified vs guessed (running log)
 See DECISIONS.md for pre-registered choices and their measured outcomes -- all Stage A/C numbers above are VERIFIED (measured, logs retained under cuad_data/*.log).

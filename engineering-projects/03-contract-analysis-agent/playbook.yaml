@@ -1,0 +1,87 @@
+# Placeholder business rules, owner to review.
+#
+# Thresholds here are reasonable-sounding demo defaults, not legal or
+# business advice -- a real deployment needs a contracts/legal owner to
+# set these per the reviewing party's actual risk tolerance.
+#
+# Every rule only ever reads values the extractor's grounding check has
+# already confirmed appear in the clause text (src/llm/extract_values.py
+# nulls anything ungrounded before the rule engine ever sees it).
+# A missing required clause type is always at least amber; several are
+# red, because "no cap on liability" or "no governing law" is itself a
+# risk finding, not an absence of information.
+
+rules:
+  - id: cap_on_liability_present_and_reasonable
+    clause_type: "Cap On Liability"
+    description: >
+      A liability cap should exist and should not be unreasonably low
+      relative to the deal (placeholder threshold: $50,000).
+    missing_verdict: red
+    missing_reason: "No liability cap clause found -- liability may be uncapped."
+    params:
+      min_reasonable_amount: 50000
+    amber_if: "amount is null (ungrounded) OR amount < min_reasonable_amount"
+    red_if: "never (presence absence is the only red condition here)"
+
+  - id: termination_for_convenience_present
+    clause_type: "Termination For Convenience"
+    description: >
+      Being able to exit without cause is a protective flexibility
+      clause; its absence is a demo-level amber, not a hard red.
+    missing_verdict: amber
+    missing_reason: "No termination-for-convenience right found -- the reviewing party may be locked in."
+    params: {}
+
+  - id: renewal_notice_minimum_window
+    clause_type: "Notice Period To Terminate Renewal"
+    description: >
+      The notice window to stop an auto-renewal should give enough lead
+      time to actually act on it (placeholder threshold: 30 days).
+    missing_verdict: red
+    missing_reason: "No renewal-notice period found -- an auto-renewal could lock the party in with no known opt-out window."
+    params:
+      min_notice_days: 30
+    amber_if: "notice_days is null (ungrounded) OR notice_days < min_notice_days"
+
+  - id: governing_law_preferred_jurisdiction
+    clause_type: "Governing Law"
+    description: >
+      Prefer a short list of jurisdictions the reviewing party's legal
+      team is set up to litigate in (placeholder list: Delaware, New
+      York).
+    missing_verdict: red
+    missing_reason: "No governing-law clause found -- the applicable jurisdiction is undetermined."
+    params:
+      preferred_jurisdictions: ["Delaware", "New York"]
+    amber_if: "jurisdiction is null (ungrounded) OR jurisdiction not in preferred_jurisdictions"
+
+  - id: agreement_date_present
+    clause_type: "Agreement Date"
+    description: "An agreement date should be identifiable for recordkeeping."
+    missing_verdict: amber
+    missing_reason: "No agreement date found or extracted date was not grounded in the clause text."
+    params: {}
+
+  - id: effective_date_present
+    clause_type: "Effective Date"
+    description: "An effective date should be identifiable to know when obligations start."
+    missing_verdict: amber
+    missing_reason: "No effective date found or extracted date was not grounded in the clause text."
+    params: {}
+
+  - id: expiration_date_present
+    clause_type: "Expiration Date"
+    description: "An expiration date (or explicit perpetual term) should be identifiable."
+    missing_verdict: red
+    missing_reason: "No expiration date found -- the contract's term end is undetermined."
+    params: {}
+
+  - id: audit_rights_present
+    clause_type: "Audit Rights"
+    description: >
+      Audit rights are a protective compliance clause; absence is a
+      demo-level amber.
+    missing_verdict: amber
+    missing_reason: "No audit-rights clause found -- compliance cannot be independently verified."
+    params: {}
