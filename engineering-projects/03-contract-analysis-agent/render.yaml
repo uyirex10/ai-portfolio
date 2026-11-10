@@ -1,0 +1,20 @@
+# Render deployment config. NOT deployed as part of this session --
+# written so a future session or the project owner can deploy with
+# `render deploy` (or by connecting the repo in the Render dashboard)
+# without further setup beyond providing the secrets below.
+services:
+  - type: web
+    name: contract-analysis-agent
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /v1/health
+    envVars:
+      - key: LLM_PROVIDER
+        value: gemini
+      - key: GEMINI_API_KEY
+        sync: false  # set manually in the Render dashboard; never committed
+      - key: ANTHROPIC_API_KEY
+        sync: false  # only needed if LLM_PROVIDER=anthropic
+      - key: CONTRACT_AGENT_API_KEYS
+        sync: false  # name:secret pairs, comma separated -- see src/api/auth.py
