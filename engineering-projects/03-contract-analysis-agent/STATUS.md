@@ -1,45 +1,119 @@
 # Status
 
-Last updated: 2026-11-10 (Stage A complete, frozen)
+Last updated: 2026-11-10. **All stages (A-H) complete.** 101/101 tests passing.
 
-## Done
-- Stage 1 / 1.5 / 1.6 (prior session): segment.py splitter, CUAD data, dev/test split (sealed), ALL-CAPS fix v1, PyMuPDF pinned.
-- **Stage A (complete, frozen):**
-  - `src/extract.py`: shared `extract_pdf_text()`, 1:1 char map (U+037E->';', U+00A0->' '). All duplicate pymupdf extraction code in scripts/ removed, all import from here now.
-  - Semicolon-count check: VERIFIED the earlier "2.29x length gap" was really a semicolon-count artifact (not-found spans had 362.9x the semicolon rate of found spans).
-  - Dev span integrity after char-map: not-found 11.7%->0.1% (116->1 case). TXT set barely moved (already clean).
-  - 2 TXT contracts that lost their only heading: both were the document's own title, not a real section heading (benign).
-  - Bake-off (Variant A vs B for ALL-CAPS fallback): **A chosen** (pre-registered rule failed on condition 2 -- B's dev cut rate rose +3.23pts, driven by Cap On Liability 6.6%->26.5%). See DECISIONS.md.
-  - Cap On Liability dev cut-across: 28 (pre-any-fix) -> 23 (ALL-CAPS fix alone) -> 10 (+ char-map fix). `reports/cap_liability_cuts_after.md`.
-  - Tag: `splitter-v1`. segment.py and extract.py frozen from here on.
+## Final results table (real numbers only)
 
-## In progress
-- Stage B (sealed test run) -- script ready (`scripts/run_sealed_test.py`), not yet executed.
+### Splitter (frozen as `splitter-v1`)
 
-## Done (continued)
-- **Stage B (complete):** sealed test run, once. contain% 98.3%, cut% 1.1% -- consistent with dev, no tuning after seeing it. `reports/splitter_test_results.md`.
-- **Stage D (code complete, live calls blocked):** `src/llm/provider.py` (Gemini default/Anthropic pluggable, disk cache, backoff, quota split), `classify.py` (batched multi-label), `extract_values.py` (pydantic schema + grounding check). All mocked-provider tests pass (27 tests across provider/classify/extract_values).
-- **Stage E (complete):** `playbook.yaml` (1 rule per clause type, placeholder thresholds labeled as such), `src/rules/` (engine.py, rules.py, rule_types.py -- pure code, zero LLM imports, enforced by tests/test_llm_isolation.py). 30 tests incl. a hypothesis property test: no absent/all-None input ever yields green.
+| Split | Contracts | Contain % | Cut % | Not-found % |
+|---|---|---|---|---|
+| TXT (tuned on this set) | 199 | 99.9% | 0.1% | 0.0% |
+| PDF dev | 151-157 | 98.3% | 1.6% | 0.1% |
+| PDF **test** (sealed, opened once) | 148-154 | 98.3% | 1.1% | 0.0% |
 
-- **Stage F (complete):** `src/memo.py` (quote-by-offset with a `(None, None)` "missing clause" case added after discovering the gap while building the demo; redlines LLM-generated and cached, clearly labeled as suggestions). `src/pipeline.py` orchestrates segment->classify->extract->rules->memo for one contract. `scripts/demo.py` runs one dev contract fully offline from a hand-seeded cache (`scripts/seed_demo_cache.py`, clearly disclosed as hand-authored stand-in content, not real model output). 2 sample memos written to `reports/sample_memos/`.
-- Found via real demo data (not fixed -- segment.py is frozen per Stage A): in the TransMontaigne contract, a lettered sub-clause list "(a)...(b)...(c)...(d)" is followed later by "401(k)" wrapped across a line break as "401\n(k)", and the splitter's strictly-increasing-rank check accepts "(k)" as a continuation of the same list (k's rank > d's) even though it's actually a 401(k) plan reference, not a list item. Noted for the README's known limitations.
+Cap On Liability cut-across, specifically: 28 (pre-fix) -> 23 (ALL-CAPS
+fix alone) -> 10 (+ U+037E character map, dev) -> 1.6% cut rate on test.
 
-- **Stage G (complete, blocked as expected):** `src/eval_metrics.py` (gold-label overlap rule, precision/recall/F1/support, auto-tagged error classification) -- all pure functions, fully unit-tested (15 tests). Gold-label support counts computed for real on both dev and test (`reports/error_analysis_dev.md`, `reports/eval_test_results.md`) -- these numbers are real and independent of the API-key blocker. Precision/recall/F1/grounding-rate/value-accuracy are explicitly reported as BLOCKED (no fabricated numbers). **Real methodological finding, not a bug:** Agreement Date's gold support is exactly 0 on both splits -- its labeled spans (13-26 chars) are always buried inside a much larger preamble clause (100-1900+ chars), so the pre-registered 50%-overlap gold rule can structurally never mark it positive, independent of classifier quality. Flagged for the README.
-- **Stage H (API complete):** `src/api/app.py` + `src/api/auth.py` (X-API-Key pattern from `02-document-intelligence-api/auth.py`). `POST /v1/analyze`, `GET /v1/health`. 6 endpoint tests with a mocked provider and an on-the-fly generated test PDF (no CUAD data dependency). Found and fixed a real packaging bug while verifying the Docker CMD actually works: `app.py` added `src/` and `src/llm/` to `sys.path` but never its own directory (`src/api/`), so `from auth import ...` only worked by accident in tests (which happened to add that path themselves) and would have failed silently in the real `uvicorn src.api.app:app` entrypoint. `Dockerfile`, `.dockerignore`, `render.yaml` written; NOT deployed, NOT built, per instructions.
+### Clause-type gold-label support (real; no LLM needed)
 
-## Next
-- README, STATUS.md final results table, full pytest run, secrets scan, final summary.
+| Clause type | Dev | Test |
+|---|---|---|
+| Cap On Liability | 95 | 108 |
+| Termination For Convenience | 39 | 35 |
+| Notice Period To Terminate Renewal | 39 | 34 |
+| Governing Law | 56 | 66 |
+| Agreement Date | 0 | 0 |
+| Expiration Date | 98 | 97 |
+| Effective Date | 15 | 13 |
+| Audit Rights | 58 | 38 |
 
-## Stage C (done)
-8 clause types chosen by pre-registered mechanical rule: Cap On Liability, Termination For Convenience, Notice Period To Terminate Renewal, Governing Law (must-include), Agreement Date, Expiration Date, Effective Date, Audit Rights (fill by frequency). See DECISIONS.md for the full candidate table and the "3 date fields" observation.
+### Classifier precision/recall/F1, grounding rate, value accuracy
 
-## Stage D (in progress)
-- `src/llm/provider.py`: LLMProvider ABC, GeminiProvider (default), AnthropicProvider (pluggable), disk cache at `.cache/llm/` (hash of model+prompt, NOT gitignored so demo.py can run offline from committed cache entries), exponential backoff, QuotaExceededError vs RateLimitedError split.
-- `tests/test_llm_isolation.py`: global-rule enforcement test (src/rules/ may not import anthropic/google/openai/requests). Passes trivially until src/rules/ exists (Stage E).
-- Not yet done: classify/extract pydantic schemas, batching, grounding check, mocked-provider tests.
+**BLOCKED all session.** No `GEMINI_API_KEY`/`ANTHROPIC_API_KEY` was
+ever available (confirmed by direct instantiation + call, not just an
+env check). Not fabricated as a substitute -- see
+`reports/error_analysis_dev.md` and `reports/eval_test_results.md`.
+
+## What's done, by stage
+
+- **Stage A (frozen):** `src/extract.py` (shared PDF extraction, 1:1
+  U+037E/U+00A0 char map). Bake-off chose Variant A for the ALL-CAPS
+  heading fallback (B's dev cut rate rose +3.23pts, mostly from Cap On
+  Liability 6.6%->26.5%). Tag `splitter-v1`.
+- **Stage B:** sealed test run, once, aggregates only.
+  `reports/splitter_test_results.md`.
+- **Stage C:** 8 clause types chosen by mechanical rule -- see
+  DECISIONS.md for the full candidate table.
+- **Stage D:** `src/llm/provider.py` (Gemini default, Anthropic
+  pluggable, disk cache, backoff, quota split), `classify.py`
+  (batched), `extract_values.py` (grounding check). All mocked-provider
+  tests pass; no real call ever succeeded.
+- **Stage E:** `playbook.yaml` + `src/rules/` -- pure code, zero LLM
+  imports (enforced by test), fail-closed by construction and by a
+  hypothesis property test.
+- **Stage F:** `src/memo.py` (quote sliced from source by offset,
+  never the LLM's self-report), `src/pipeline.py`, `scripts/demo.py`
+  (runs fully offline from a hand-seeded cache -- see
+  `scripts/seed_demo_cache.py` for exactly what's hand-authored and
+  why), 2 sample memos in `reports/sample_memos/`.
+- **Stage G:** `src/eval_metrics.py` (gold rule, P/R/F1, auto-tagged
+  error analysis) -- pure, fully unit-tested. Gold-label support
+  computed for real on dev and test; precision/recall/F1/grounding/
+  value-accuracy explicitly BLOCKED, not fabricated.
+- **Stage H:** `src/api/app.py` + `auth.py` (X-API-Key, pattern from
+  the sibling Document Intelligence project), 6 endpoint tests with a
+  mocked provider, `Dockerfile`/`.dockerignore`/`render.yaml` (not
+  built, not deployed).
+- README, LEARN.md (progressive, both core ideas at 5 age levels),
+  DECISIONS.md, this file, secrets scan (clean), full test suite: all
+  done.
+
+## Real bugs found and fixed along the way (not just features added)
+
+1. Semicolon-count check proved the earlier "2.29x length gap" finding
+   was really a 362.9x semicolon-rate artifact, not a length effect.
+2. `GeminiProvider`/`AnthropicProvider` built their client in `__init__`,
+   which raised immediately with no key -- defeating offline/cached
+   operation. Fixed to lazy-init on first real `_call()`.
+3. `memo.py` had no path for a "missing clause type" finding (nothing
+   to quote) until building the demo surfaced the gap. Fixed with a
+   `(None, None)` case that still satisfies `quote == source[start:end]`
+   (quote is `""` at `(0, 0)`, not a placeholder string).
+4. `scripts/seed_demo_cache.py`'s first attempt seeded one combined
+   classification prompt for a 26-clause contract; the real pipeline
+   batches at 20 clauses, so it silently fell through to a real
+   (failing) API call. Fixed by reusing the real batching function.
+5. My own `eval_metrics.classify_error` first draft mis-prioritized
+   "boundary problem" ahead of "buried span" so the latter was
+   unreachable except in a degenerate case; caught by its own unit
+   tests, not inspection.
+6. `src/api/app.py` added `src/` and `src/llm/` to `sys.path` but never
+   its own directory, so `from auth import ...` only worked by accident
+   in tests; would have failed in the real `uvicorn src.api.app:app`
+   entrypoint. Caught by actually testing the dotted import path before
+   trusting the Dockerfile, not by inspection.
+7. Agreement Date's gold support of exactly 0 looked like a bug;
+   investigated by hand and confirmed it's a real structural mismatch
+   between the 50%-overlap gold rule and "point-like" metadata spans
+   buried in large preamble clauses -- not a bug, a methodology
+   limitation now documented in the README.
 
 ## Known blocker (confirmed, not guessed)
-- Confirmed by actually instantiating `GeminiProvider` and calling `.complete()`: raises `ValueError: No API key was provided`. `GEMINI_API_KEY` and `ANTHROPIC_API_KEY` are both unset. No real LLM call has succeeded or will succeed this session. Code, caching, and mocked-provider tests proceed regardless (all passing). Every stage from here that needs a live call (Stage D real classify/extract on real contracts, Stage F real redlines, Stage G real precision/recall) will be built in full but will report this blocker explicitly rather than fabricating numbers. scripts/demo.py will use hand-authored, clearly-labeled synthetic cache entries (not real model output) so the pipeline wiring is still demonstrable end to end.
 
-## Verified vs guessed (running log)
-See DECISIONS.md for pre-registered choices and their measured outcomes -- all Stage A/C numbers above are VERIFIED (measured, logs retained under cuad_data/*.log).
+No `GEMINI_API_KEY` or `ANTHROPIC_API_KEY` was available this entire
+session. Confirmed by actually instantiating a provider and calling
+`.complete()` (raises `ValueError: No API key was provided`), not just
+an environment-variable check. Every stage that needed a live call was
+still built and tested in full (with mocked providers); every report
+that would have needed real predictions says BLOCKED explicitly rather
+than substituting a plausible-looking number.
+
+## Verified vs guessed
+
+Every claim with a number in this file and in DECISIONS.md was
+measured this session (logs retained in `cuad_data/*.log`, gitignored
+but reproducible by re-running the corresponding script). Nothing
+numeric in this file is guessed. See README's Known Limitations for
+the few places a judgment call (not a number) was made and labeled as
+such (the ALL-CAPS allowlist compromise, the pinned extractor choice).

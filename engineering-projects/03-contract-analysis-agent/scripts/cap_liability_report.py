@@ -144,7 +144,7 @@ def main():
             grouped[trigger].append((case, cut_clause))
 
     lines = []
-    lines.append("# Cap On Liability — cut-across cases (dev set, PyMuPDF extraction)")
+    lines.append("# Cap On Liability -- cut-across cases (dev set, PyMuPDF extraction)")
     lines.append("")
     lines.append(f"Dev-set PDF-only contracts: {len(dev_stems)}. "
                  f"Cap On Liability spans cut across 2+ splitter clauses: **{len(cases)}**.")

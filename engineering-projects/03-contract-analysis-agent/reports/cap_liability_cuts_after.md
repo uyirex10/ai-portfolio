@@ -1,4 +1,4 @@
-# Cap On Liability — cut-across cases (dev set, PyMuPDF extraction)
+# Cap On Liability -- cut-across cases (dev set, PyMuPDF extraction)
 
 Dev-set PDF-only contracts: 157. Cap On Liability spans cut across 2+ splitter clauses: **10**.
 
