@@ -177,6 +177,42 @@ def test_no_structure_at_all_returns_single_clause():
     assert clauses[0].text == text
 
 
+def test_allcaps_disclaimer_sentence_is_not_mistaken_for_a_heading():
+    # Real-world shape (found via CUAD PDF profiling): a liability
+    # disclaimer written entirely in caps, where every sentence restart
+    # after a period looks like a fresh ALL-CAPS heading unless the
+    # splitter recognizes it's still inside the same clause.
+    text = (
+        "13.4 Limitation of Liability\n\n"
+        "a) IN NO EVENT SHALL EITHER PARTY BE LIABLE FOR ANY SPECIAL, CONSEQUENTIAL, "
+        "PUNITIVE, INCIDENTAL OR INDIRECT DAMAGES, OR LOST PROFITS, HOWEVER CAUSED, ON ANY "
+        "THEORY OF LIABILITY. THIS LIMITATION WILL APPLY EVEN IF THE OTHER PARTY HAS BEEN "
+        "ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n"
+        "14. Governing Law.\n\n"
+        "This Agreement is governed by the laws of Delaware.\n"
+    )
+    clauses = segment_contract(text)
+    _assert_round_trip(text, clauses)
+    assert _ids(clauses) == ["0", "14"]
+    assert "THIS LIMITATION WILL APPLY" in clauses[0].text
+
+
+def test_real_allcaps_headings_still_split_even_after_an_allcaps_disclaimer():
+    text = (
+        "LIMITATION OF LIABILITY\n\n"
+        "IN NO EVENT SHALL EITHER PARTY BE LIABLE FOR ANY SPECIAL, CONSEQUENTIAL OR "
+        "INCIDENTAL DAMAGES. THIS LIMITATION APPLIES EVEN IF A PARTY HAS BEEN ADVISED OF "
+        "THE POSSIBILITY OF SUCH DAMAGES.\n\n"
+        "TERMINATION\n\n"
+        "Either party may terminate this Agreement upon 30 days written notice.\n\n"
+        "GOVERNING LAW\n\n"
+        "This Agreement is governed by the laws of Delaware.\n"
+    )
+    clauses = segment_contract(text)
+    _assert_round_trip(text, clauses)
+    assert [c.heading for c in clauses] == ["LIMITATION OF LIABILITY", "TERMINATION", "GOVERNING LAW"]
+
+
 def test_dollar_amounts_and_dates_do_not_trigger_false_boundaries():
     text = (
         "1. Payment. The Buyer shall pay $10.50 per unit, due by 1.15.2024, "

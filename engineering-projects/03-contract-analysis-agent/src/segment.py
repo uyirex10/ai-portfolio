@@ -146,6 +146,56 @@ CAPS_HEADING_RE = re.compile(
 
 _PAGE_NOISE_RE = re.compile(r'page\s+\d+\s+of\s+\d+', re.I)
 
+_CAPS_CONTEXT_WINDOW = 60
+_CAPS_CONTEXT_MIN_ALPHA = 15
+_CAPS_CONTEXT_UPPER_RATIO = 0.85
+
+# A disclaimer clause (which conventionally IS written entirely in caps)
+# can legitimately be followed immediately by a real heading with no
+# mixed-case text between them at all -- e.g. an all-caps limitation-of-
+# liability clause ending right where "TERMINATION" begins. The
+# before-context check alone can't tell that apart from a sentence
+# restart inside the SAME disclaimer, so known canonical section-heading
+# phrases are always accepted regardless of context. This is a deliberate
+# compromise, not a general solution: a real heading using wording not on
+# this list, immediately after another all-caps clause's tail, would
+# still be suppressed.
+_KNOWN_HEADING_PHRASES = {
+    'GOVERNING LAW', 'LIMITATION OF LIABILITY', 'TERMINATION', 'CONFIDENTIALITY',
+    'MISCELLANEOUS', 'INDEMNIFICATION', 'FORCE MAJEURE', 'ENTIRE AGREEMENT', 'NOTICES',
+    'NOTICE', 'ASSIGNMENT', 'WARRANTY', 'WARRANTIES', 'DEFINITIONS', 'RECITALS',
+    'SEVERABILITY', 'COUNTERPARTS', 'AMENDMENT', 'AMENDMENTS', 'WAIVER', 'ARBITRATION',
+    'DISPUTE RESOLUTION', 'NON-DISCLOSURE', 'NON-COMPETE', 'EXCLUSIVITY', 'AUDIT RIGHTS',
+    'INSURANCE', 'TAXES', 'INTELLECTUAL PROPERTY', 'LICENSE GRANT', 'SURVIVAL',
+    'HEADINGS', 'INTERPRETATION', 'FURTHER ASSURANCES', 'SUCCESSORS AND ASSIGNS',
+    'PUBLICITY', 'EXPORT CONTROL', 'DATA PROTECTION', 'SIGNATURES',
+    'REPRESENTATIONS AND WARRANTIES', 'LIMITATION OF REMEDIES',
+}
+
+
+def _is_inside_allcaps_block(text: str, start: int, end: int) -> bool:
+    """Liability/warranty disclaimer boilerplate is conventionally written
+    entirely in ALL CAPS (a drafting convention for conspicuousness), so
+    *every* sentence restart after a period inside one of those paragraphs
+    looks exactly like a real standalone heading to CAPS_HEADING_RE --
+    e.g. "...SUCH DAMAGE.\nTHIS LIMITATION WILL APPLY EVEN IF..." is not a
+    heading, just the next sentence of the same all-caps clause.
+
+    Only the text *before* the candidate is checked, deliberately: a real
+    heading's own body text (e.g. "LIMITATION OF LIABILITY" followed by
+    "IN NO EVENT SHALL...") is routinely all-caps too, so checking after
+    the candidate rejects genuine headings. What actually distinguishes a
+    real heading is what came before it -- the tail end of the *previous*
+    clause, which is normal mixed-case prose for a real heading, versus
+    more all-caps disclaimer text for a same-paragraph sentence restart.
+    """
+    window = text[max(0, start - _CAPS_CONTEXT_WINDOW):start]
+    alpha = [c for c in window if c.isalpha()]
+    if len(alpha) < _CAPS_CONTEXT_MIN_ALPHA:
+        return False
+    upper_ratio = sum(1 for c in alpha if c.isupper()) / len(alpha)
+    return upper_ratio >= _CAPS_CONTEXT_UPPER_RATIO
+
 
 def _looks_like_page_noise(text: str, pos: int) -> bool:
     """True only if `pos` falls inside an actual "Page X of Y" phrase --
@@ -356,6 +406,8 @@ def _find_top_level_candidates(text: str) -> List[dict]:
             c['start'] <= pos <= c['marker_end'] + 5 for c in numbered_or_structured
         )
         if near_existing:
+            continue
+        if heading not in _KNOWN_HEADING_PHRASES and _is_inside_allcaps_block(text, pos, m.end()):
             continue
         caps_candidates.append({
             'start': pos,
