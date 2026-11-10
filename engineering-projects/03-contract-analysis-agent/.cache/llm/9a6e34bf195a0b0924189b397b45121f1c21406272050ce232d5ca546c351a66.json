@@ -1,0 +1,5 @@
+{
+ "model": "gemini-2.0-flash",
+ "prompt": "The following \"Governing Law\" clause received a AMBER finding: Governing law (Colorado) is not on the preferred jurisdiction list (['Delaware', 'New York']).\n\nClause text:\n2.1 Choice of Law; Submission to Jurisdiction. This Agreement shall be subject to and governed by the\nlaws of the State of Colorado, excluding any conflicts-of-law rule or principle that might refer the construction or\ninterpretation of this Agreement to the laws of another state. Each Party hereby submits to the jurisdiction of the\nstate and federal courts in the State of Colorado and to venue in Denver, Colorado.\n\n\nSuggest a specific redline (revised clause language) that would address this finding. Respond with ONLY the suggested replacement text, no commentary or markdown formatting.",
+ "response": "If Delaware or New York law is preferred, revise Section 2.1 to read: \"This Agreement shall be subject to and governed by the laws of the State of Delaware...\""
+}

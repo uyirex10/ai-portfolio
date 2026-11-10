@@ -21,8 +21,11 @@ Last updated: 2026-11-10 (Stage A complete, frozen)
 - **Stage D (code complete, live calls blocked):** `src/llm/provider.py` (Gemini default/Anthropic pluggable, disk cache, backoff, quota split), `classify.py` (batched multi-label), `extract_values.py` (pydantic schema + grounding check). All mocked-provider tests pass (27 tests across provider/classify/extract_values).
 - **Stage E (complete):** `playbook.yaml` (1 rule per clause type, placeholder thresholds labeled as such), `src/rules/` (engine.py, rules.py, rule_types.py -- pure code, zero LLM imports, enforced by tests/test_llm_isolation.py). 30 tests incl. a hypothesis property test: no absent/all-None input ever yields green.
 
+- **Stage F (complete):** `src/memo.py` (quote-by-offset with a `(None, None)` "missing clause" case added after discovering the gap while building the demo; redlines LLM-generated and cached, clearly labeled as suggestions). `src/pipeline.py` orchestrates segment->classify->extract->rules->memo for one contract. `scripts/demo.py` runs one dev contract fully offline from a hand-seeded cache (`scripts/seed_demo_cache.py`, clearly disclosed as hand-authored stand-in content, not real model output). 2 sample memos written to `reports/sample_memos/`.
+- Found via real demo data (not fixed -- segment.py is frozen per Stage A): in the TransMontaigne contract, a lettered sub-clause list "(a)...(b)...(c)...(d)" is followed later by "401(k)" wrapped across a line break as "401\n(k)", and the splitter's strictly-increasing-rank check accepts "(k)" as a continuation of the same list (k's rank > d's) even though it's actually a 401(k) plan reference, not a list item. Noted for the README's known limitations.
+
 ## Next
-- Stage F (memos) -> G (eval) -> H (ship).
+- Stage G (eval) -> H (ship).
 
 ## Stage C (done)
 8 clause types chosen by pre-registered mechanical rule: Cap On Liability, Termination For Convenience, Notice Period To Terminate Renewal, Governing Law (must-include), Agreement Date, Expiration Date, Effective Date, Audit Rights (fill by frequency). See DECISIONS.md for the full candidate table and the "3 date fields" observation.

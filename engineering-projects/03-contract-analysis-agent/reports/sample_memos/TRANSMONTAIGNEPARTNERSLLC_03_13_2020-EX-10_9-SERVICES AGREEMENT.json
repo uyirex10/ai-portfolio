@@ -1,0 +1,83 @@
+{
+  "contract": "TRANSMONTAIGNEPARTNERSLLC_03_13_2020-EX-10.9-SERVICES AGREEMENT",
+  "findings": [
+    {
+      "rule_id": "cap_on_liability_present_and_reasonable",
+      "clause_type": "Cap On Liability",
+      "verdict": "red",
+      "reason": "No liability cap clause found -- liability may be uncapped.",
+      "quote": "",
+      "quote_start": 0,
+      "quote_end": 0,
+      "redline_suggestion": "Add a clause of this type -- there is nothing in the document to redline against, since none currently exists.",
+      "redline_is_suggestion": true
+    },
+    {
+      "rule_id": "renewal_notice_minimum_window",
+      "clause_type": "Notice Period To Terminate Renewal",
+      "verdict": "red",
+      "reason": "No renewal-notice period found -- an auto-renewal could lock the party in with no known opt-out window.",
+      "quote": "",
+      "quote_start": 0,
+      "quote_end": 0,
+      "redline_suggestion": "Add a clause of this type -- there is nothing in the document to redline against, since none currently exists.",
+      "redline_is_suggestion": true
+    },
+    {
+      "rule_id": "governing_law_preferred_jurisdiction",
+      "clause_type": "Governing Law",
+      "verdict": "amber",
+      "reason": "Governing law (Colorado) is not on the preferred jurisdiction list (['Delaware', 'New York']).",
+      "quote": "governed by the\nlaws of the State of Colorado",
+      "quote_start": 2876,
+      "quote_end": 2921,
+      "redline_suggestion": "If Delaware or New York law is preferred, revise Section 2.1 to read: \"This Agreement shall be subject to and governed by the laws of the State of Delaware...\"",
+      "redline_is_suggestion": true
+    },
+    {
+      "rule_id": "agreement_date_present",
+      "clause_type": "Agreement Date",
+      "verdict": "amber",
+      "reason": "No agreement date found, or the extracted date could not be grounded.",
+      "quote": "effective as of, August __, 2019",
+      "quote_start": 81,
+      "quote_end": 113,
+      "redline_suggestion": "Fill in the blank day in the preamble (\"August __, 2019\") with the actual execution date.",
+      "redline_is_suggestion": true
+    },
+    {
+      "rule_id": "effective_date_present",
+      "clause_type": "Effective Date",
+      "verdict": "amber",
+      "reason": "No effective date found, or the extracted date could not be grounded.",
+      "quote": "effective as of, August __, 2019",
+      "quote_start": 81,
+      "quote_end": 113,
+      "redline_suggestion": "Fill in the blank day in the preamble (\"August __, 2019\") with the actual effective date.",
+      "redline_is_suggestion": true
+    },
+    {
+      "rule_id": "expiration_date_present",
+      "clause_type": "Expiration Date",
+      "verdict": "red",
+      "reason": "No expiration date found, or the extracted date could not be grounded -- the contract's term end is undetermined.",
+      "quote": "",
+      "quote_start": 0,
+      "quote_end": 0,
+      "redline_suggestion": "Add a clause of this type -- there is nothing in the document to redline against, since none currently exists.",
+      "redline_is_suggestion": true
+    },
+    {
+      "rule_id": "audit_rights_present",
+      "clause_type": "Audit Rights",
+      "verdict": "amber",
+      "reason": "No audit-rights clause found -- compliance cannot be independently verified.",
+      "quote": "",
+      "quote_start": 0,
+      "quote_end": 0,
+      "redline_suggestion": "Add a clause of this type -- there is nothing in the document to redline against, since none currently exists.",
+      "redline_is_suggestion": true
+    }
+  ],
+  "_notice": "Hand-authored stand-in LLM responses; no real API call was made this session. See STATUS.md."
+}

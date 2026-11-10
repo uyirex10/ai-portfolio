@@ -41,11 +41,13 @@ class MemoFinding:
 @dataclass
 class ClauseFindingInput:
     clause_type: str
-    clause_start: int
-    clause_end: int
     rule_id: str
     verdict: str
     reason: str
+    # None/None for a "missing clause type" finding -- there is no
+    # clause of this type in the document to quote from at all.
+    clause_start: Optional[int] = None
+    clause_end: Optional[int] = None
     evidence: Optional[str] = None  # the LLM's claimed evidence substring, if any
 
 
@@ -91,9 +93,21 @@ def build_memo_findings(source: str, clause_findings: list[ClauseFindingInput], 
     for cf in clause_findings:
         if skip_green and cf.verdict == "green":
             continue
-        quote, start, end = locate_quote(source, cf.clause_start, cf.clause_end, cf.evidence)
-        clause_text = source[cf.clause_start:cf.clause_end]
-        redline = generate_redline_suggestion(cf.clause_type, clause_text, cf.verdict, cf.reason, provider)
+
+        if cf.clause_start is None or cf.clause_end is None:
+            # A "missing clause type" finding: nothing to quote or send
+            # to the LLM for a redline suggestion against. quote is the
+            # empty string at (0, 0) -- still a real source[0:0] slice,
+            # so the quote == source[start:end] invariant holds even
+            # here; the render layer is what explains "nothing found".
+            quote, start, end = source[0:0], 0, 0
+            redline = ("Add a clause of this type -- there is nothing in the document to redline "
+                       "against, since none currently exists.")
+        else:
+            quote, start, end = locate_quote(source, cf.clause_start, cf.clause_end, cf.evidence)
+            clause_text = source[cf.clause_start:cf.clause_end]
+            redline = generate_redline_suggestion(cf.clause_type, clause_text, cf.verdict, cf.reason, provider)
+
         findings.append(MemoFinding(
             rule_id=cf.rule_id, clause_type=cf.clause_type, verdict=cf.verdict, reason=cf.reason,
             quote=quote, quote_start=start, quote_end=end, redline_suggestion=redline,
@@ -112,8 +126,11 @@ def render_markdown(contract_name: str, findings: list[MemoFinding]) -> str:
         lines.append("")
         lines.append(f"**Reason:** {f.reason}")
         lines.append("")
-        lines.append(f"**Quoted evidence** (source offsets {f.quote_start}-{f.quote_end}):")
-        lines.append("> " + f.quote.replace("\n", "\n> "))
+        if f.quote:
+            lines.append(f"**Quoted evidence** (source offsets {f.quote_start}-{f.quote_end}):")
+            lines.append("> " + f.quote.replace("\n", "\n> "))
+        else:
+            lines.append("**Quoted evidence:** none -- no clause of this type was found in the document.")
         lines.append("")
         if f.redline_suggestion:
             lines.append("**Suggested redline (LLM suggestion, not reviewed by counsel):**")

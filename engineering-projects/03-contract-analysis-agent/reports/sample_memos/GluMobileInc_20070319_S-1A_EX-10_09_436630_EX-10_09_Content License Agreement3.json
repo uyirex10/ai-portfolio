@@ -1,0 +1,94 @@
+{
+  "contract": "GluMobileInc_20070319_S-1A_EX-10.09_436630_EX-10.09_Content License Agreement3",
+  "findings": [
+    {
+      "rule_id": "cap_on_liability_present_and_reasonable",
+      "clause_type": "Cap On Liability",
+      "verdict": "red",
+      "reason": "No liability cap clause found -- liability may be uncapped.",
+      "quote": "",
+      "quote_start": 0,
+      "quote_end": 0,
+      "redline_suggestion": "Add a clause of this type -- there is nothing in the document to redline against, since none currently exists.",
+      "redline_is_suggestion": true
+    },
+    {
+      "rule_id": "termination_for_convenience_present",
+      "clause_type": "Termination For Convenience",
+      "verdict": "amber",
+      "reason": "No termination-for-convenience right found.",
+      "quote": "",
+      "quote_start": 0,
+      "quote_end": 0,
+      "redline_suggestion": "Add a clause of this type -- there is nothing in the document to redline against, since none currently exists.",
+      "redline_is_suggestion": true
+    },
+    {
+      "rule_id": "renewal_notice_minimum_window",
+      "clause_type": "Notice Period To Terminate Renewal",
+      "verdict": "red",
+      "reason": "No renewal-notice period found -- an auto-renewal could lock the party in with no known opt-out window.",
+      "quote": "",
+      "quote_start": 0,
+      "quote_end": 0,
+      "redline_suggestion": "Add a clause of this type -- there is nothing in the document to redline against, since none currently exists.",
+      "redline_is_suggestion": true
+    },
+    {
+      "rule_id": "governing_law_preferred_jurisdiction",
+      "clause_type": "Governing Law",
+      "verdict": "red",
+      "reason": "No governing-law clause found -- the applicable jurisdiction is undetermined.",
+      "quote": "",
+      "quote_start": 0,
+      "quote_end": 0,
+      "redline_suggestion": "Add a clause of this type -- there is nothing in the document to redline against, since none currently exists.",
+      "redline_is_suggestion": true
+    },
+    {
+      "rule_id": "agreement_date_present",
+      "clause_type": "Agreement Date",
+      "verdict": "amber",
+      "reason": "No agreement date found, or the extracted date could not be grounded.",
+      "quote": "",
+      "quote_start": 0,
+      "quote_end": 0,
+      "redline_suggestion": "Add a clause of this type -- there is nothing in the document to redline against, since none currently exists.",
+      "redline_is_suggestion": true
+    },
+    {
+      "rule_id": "effective_date_present",
+      "clause_type": "Effective Date",
+      "verdict": "amber",
+      "reason": "No effective date found, or the extracted date could not be grounded.",
+      "quote": "",
+      "quote_start": 0,
+      "quote_end": 0,
+      "redline_suggestion": "Add a clause of this type -- there is nothing in the document to redline against, since none currently exists.",
+      "redline_is_suggestion": true
+    },
+    {
+      "rule_id": "expiration_date_present",
+      "clause_type": "Expiration Date",
+      "verdict": "red",
+      "reason": "No expiration date found, or the extracted date could not be grounded -- the contract's term end is undetermined.",
+      "quote": "",
+      "quote_start": 0,
+      "quote_end": 0,
+      "redline_suggestion": "Add a clause of this type -- there is nothing in the document to redline against, since none currently exists.",
+      "redline_is_suggestion": true
+    },
+    {
+      "rule_id": "audit_rights_present",
+      "clause_type": "Audit Rights",
+      "verdict": "amber",
+      "reason": "No audit-rights clause found -- compliance cannot be independently verified.",
+      "quote": "",
+      "quote_start": 0,
+      "quote_end": 0,
+      "redline_suggestion": "Add a clause of this type -- there is nothing in the document to redline against, since none currently exists.",
+      "redline_is_suggestion": true
+    }
+  ],
+  "_notice": "Hand-authored stand-in LLM responses; no real API call was made this session. See STATUS.md."
+}
