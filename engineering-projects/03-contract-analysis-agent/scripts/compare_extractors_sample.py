@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from segment import segment_contract, flatten  # noqa: E402
+from extract import extract_pdf_text as extract_pymupdf  # noqa: E402
 
 PDF_DIR = ROOT / "cuad_data" / "CUAD_v1" / "full_contract_pdf"
 SAMPLE_FILE = ROOT / "data_splits" / "sample_30_contracts.txt"
@@ -28,15 +29,6 @@ def extract_pdfplumber(path: Path) -> str:
     import pdfplumber
     with pdfplumber.open(path) as pdf:
         return "\n".join((page.extract_text() or "") for page in pdf.pages)
-
-
-def extract_pymupdf(path: Path) -> str:
-    import pymupdf
-    doc = pymupdf.open(path)
-    try:
-        return "\n".join(page.get_text() for page in doc)
-    finally:
-        doc.close()
 
 
 def profile(text: str) -> dict:

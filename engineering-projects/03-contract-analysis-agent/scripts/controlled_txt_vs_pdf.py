@@ -27,20 +27,12 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from segment import segment_contract, flatten  # noqa: E402
+from extract import extract_pdf_text as pymupdf_extract  # noqa: E402
 from span_integrity import CANDIDATE_CATEGORIES, find_span, classify_span  # noqa: E402
 
 CSV_PATH = ROOT / "cuad_data" / "CUAD_v1" / "master_clauses.csv"
 TXT_DIR = ROOT / "cuad_data" / "CUAD_v1" / "full_contract_txt"
 PDF_DIR = ROOT / "cuad_data" / "CUAD_v1" / "full_contract_pdf"
-
-
-def pymupdf_extract(path: Path) -> str:
-    import pymupdf
-    doc = pymupdf.open(path)
-    try:
-        return "\n".join(page.get_text() for page in doc)
-    finally:
-        doc.close()
 
 
 def score(text: str, leaves, header, row, norm_cache) -> dict:

@@ -42,6 +42,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from segment import segment_contract, flatten  # noqa: E402
+from extract import extract_pdf_text as pymupdf_extract  # noqa: E402
 
 CSV_PATH = ROOT / "cuad_data" / "CUAD_v1" / "master_clauses.csv"
 TXT_DIR = ROOT / "cuad_data" / "CUAD_v1" / "full_contract_txt"
@@ -257,14 +258,6 @@ def main():
 
     txt_map = {p.stem: p for p in TXT_DIR.rglob("*.txt")}
     txt_results, txt_grand = run_for_dataset("TXT SET (200 contracts)", header, rows, txt_map)
-
-    def pymupdf_extract(path: Path) -> str:
-        import pymupdf
-        doc = pymupdf.open(path)
-        try:
-            return "\n".join(page.get_text() for page in doc)
-        finally:
-            doc.close()
 
     dev_stems = set(s.strip() for s in DEV_FILE.read_text(encoding="utf-8").splitlines() if s.strip())
     pdf_map = {p.stem: p for p in PDF_DIR.rglob("*.[pP][dD][fF]")}

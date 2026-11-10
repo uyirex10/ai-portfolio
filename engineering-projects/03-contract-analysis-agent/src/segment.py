@@ -173,6 +173,22 @@ _KNOWN_HEADING_PHRASES = {
 }
 
 
+# Stage A bake-off, Variant B: reject a caps candidate if its heading
+# text itself contains a verb or modal auxiliary (real headings are noun
+# phrases; a sentence restart inside a disclaimer is a complete clause
+# with a verb). An alternative to Variant A's context-ratio+allowlist
+# check, not a supplement to it -- see _find_top_level_candidates's
+# `caps_fallback_rule` parameter.
+_VERB_OR_MODAL_WORDS = {
+    'SHALL', 'WILL', 'MAY', 'MUST', 'IS', 'ARE', 'HAS', 'HAVE', 'CAN',
+    'WOULD', 'SHOULD', 'COULD', 'DOES', 'DID', 'WAS', 'WERE', 'BE',
+}
+
+
+def _contains_verb_or_modal(heading: str) -> bool:
+    return bool(set(heading.upper().split()) & _VERB_OR_MODAL_WORDS)
+
+
 def _is_inside_allcaps_block(text: str, start: int, end: int) -> bool:
     """Liability/warranty disclaimer boilerplate is conventionally written
     entirely in ALL CAPS (a drafting convention for conspicuousness), so
@@ -320,7 +336,7 @@ def _group_dotted_as_top_level(text: str) -> List[dict]:
     return groups
 
 
-def _find_top_level_candidates(text: str) -> List[dict]:
+def _find_top_level_candidates(text: str, caps_fallback_rule: str = 'A') -> List[dict]:
     article_matches = _collect_matches(ARTICLE_RE, text, 'article')
     section_matches = _collect_matches(SECTION_RE, text, 'section')
 
@@ -407,8 +423,12 @@ def _find_top_level_candidates(text: str) -> List[dict]:
         )
         if near_existing:
             continue
-        if heading not in _KNOWN_HEADING_PHRASES and _is_inside_allcaps_block(text, pos, m.end()):
-            continue
+        if caps_fallback_rule == 'B':
+            if _contains_verb_or_modal(heading):
+                continue
+        else:
+            if heading not in _KNOWN_HEADING_PHRASES and _is_inside_allcaps_block(text, pos, m.end()):
+                continue
         caps_candidates.append({
             'start': pos,
             'marker_end': m.end(),
@@ -569,17 +589,24 @@ def _attach_lettered(text: str, clause: Clause) -> None:
     clause.subclauses = children
 
 
-def segment_contract(text: str) -> List[Clause]:
+def segment_contract(text: str, caps_fallback_rule: str = 'A') -> List[Clause]:
     """Split `text` into clause-aware segments.
 
     Returns top-level Clause objects in document order; each clause's
     `subclauses` holds nested dotted-number / lettered sub-clauses found
     within its span. Every clause.text is an exact source[start:end] slice.
+
+    `caps_fallback_rule`: 'A' (default, frozen) uses the before-context
+    all-caps-ratio check plus a canonical-phrase allowlist. 'B' is the
+    Stage A bake-off alternative: reject a caps candidate if its heading
+    text contains a verb or modal auxiliary, instead of the context
+    check. Exists for scripts/bakeoff.py's comparison; not meant to be
+    selected in normal use once Stage A's pre-registered choice is made.
     """
     if not text:
         return []
 
-    top_cands, demoted = _find_top_level_candidates(text)
+    top_cands, demoted = _find_top_level_candidates(text, caps_fallback_rule)
 
     if not top_cands:
         return [Clause(id='1', heading=None, text=text, start=0, end=len(text))]

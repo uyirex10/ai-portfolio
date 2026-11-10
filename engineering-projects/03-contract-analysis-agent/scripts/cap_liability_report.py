@@ -1,4 +1,4 @@
-"""Write reports/cap_liability_cuts.md: every Cap On Liability cut-across
+"""Write reports/cap_liability_cuts_after.md: every Cap On Liability cut-across
 case in the dev split of PDF-only contracts (PyMuPDF extraction), with
 the labeled span, the boundary that split it, 200 chars of source on
 each side of the cut point, and an inferred heading-pattern label for
@@ -30,12 +30,13 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from segment import segment_contract, flatten  # noqa: E402
+from extract import extract_pdf_text  # noqa: E402
 from span_integrity import find_span, classify_span  # noqa: E402
 
 CSV_PATH = ROOT / "cuad_data" / "CUAD_v1" / "master_clauses.csv"
 PDF_DIR = ROOT / "cuad_data" / "CUAD_v1" / "full_contract_pdf"
 DEV_FILE = ROOT / "data_splits" / "dev_contracts.txt"
-OUT_PATH = ROOT / "reports" / "cap_liability_cuts.md"
+OUT_PATH = ROOT / "reports" / "cap_liability_cuts_after.md"
 
 CATEGORY = "Cap On Liability"
 
@@ -67,15 +68,6 @@ def infer_trigger(clause) -> str:
     return f"unrecognized id shape ({cid!r})"
 
 
-def pymupdf_extract(path: Path) -> str:
-    import pymupdf
-    doc = pymupdf.open(path)
-    try:
-        return "\n".join(page.get_text() for page in doc)
-    finally:
-        doc.close()
-
-
 def main():
     dev_stems = set(s.strip() for s in DEV_FILE.read_text(encoding="utf-8").splitlines() if s.strip())
 
@@ -102,7 +94,7 @@ def main():
         if path is None:
             continue
         try:
-            text = pymupdf_extract(path)
+            text = extract_pdf_text(path)
         except Exception as e:
             errors.append((stem, str(e)[:150]))
             continue

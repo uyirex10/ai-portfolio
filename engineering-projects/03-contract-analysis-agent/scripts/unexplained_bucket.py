@@ -33,6 +33,7 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from segment import segment_contract, flatten  # noqa: E402
+from extract import extract_pdf_text as pymupdf_extract  # noqa: E402
 from span_integrity import (  # noqa: E402
     CANDIDATE_CATEGORIES, find_span, classify_span, is_omitted, load_csv_rows, normalize,
 )
@@ -41,15 +42,6 @@ PDF_DIR = ROOT / "cuad_data" / "CUAD_v1" / "full_contract_pdf"
 DEV_FILE = ROOT / "data_splits" / "dev_contracts.txt"
 
 _PAGE_NUM_RE = re.compile(r"page\s+\d+\s+of\s+\d+", re.I)
-
-
-def pymupdf_extract(path: Path) -> str:
-    import pymupdf
-    doc = pymupdf.open(path)
-    try:
-        return "\n".join(page.get_text() for page in doc)
-    finally:
-        doc.close()
 
 
 def looks_like_header_footer_or_table(gap_text: str) -> str | None:
