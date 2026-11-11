@@ -27,6 +27,15 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Optional
 
+try:
+    from dotenv import load_dotenv
+    # Project root .env -- this was listed as a dependency since Stage 1
+    # but never actually wired up until Stage I's live run surfaced the
+    # gap (os.environ.get() alone never picks up a .env file's contents).
+    load_dotenv(Path(__file__).resolve().parents[2] / ".env")
+except ImportError:
+    pass
+
 CACHE_DIR = Path(__file__).resolve().parents[2] / ".cache" / "llm"
 
 
