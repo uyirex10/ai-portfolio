@@ -4,6 +4,36 @@ Pre-registered rules and the measured outcomes that triggered them, in order.
 
 (Entries appended as each stage completes.)
 
+## Stage I, step 0: live preflight (model selection, VERIFIED)
+
+A real Gemini API key was placed in `.env` (`GEMINI_API_KEY`). Two real
+bugs fixed first: `provider.py` never called `load_dotenv()` (so a
+`.env` file's contents were silently ignored regardless of whether a
+key was present), and `.env.example` only listed `ANTHROPIC_API_KEY`,
+a leftover from before Gemini became the default. Both fixed.
+
+Preflight call: `client.models.list()` against this key returned 27
+models. Flash-class models with full `generateContent` support (not
+`-lite`, not image/embedding-only): `gemini-2.5-flash`,
+`gemini-3.1-flash-lite`, `gemini-3.5-flash`, `gemini-3.5-flash-lite`,
+`gemini-3.6-flash`, `gemini-3.7-flash`, `gemini-3.8-flash`. The
+previously hardcoded default (`gemini-2.0-flash`) does not appear in
+this key's list at all -- confirms the instruction's warning that
+older Flash names get deprecated for new keys.
+
+**Picked `gemini-3.8-flash`**: the highest-version plain Flash model
+(not `-lite`) with `generateContent`, `countTokens`,
+`createCachedContent`, and `batchGenerateContent` support. Verified
+with an actual `generateContent` call ("Reply with exactly the word:
+OK" -> `'OK'`) before committing to it. Set as `GeminiProvider.default_model`
+in `src/llm/provider.py`.
+
+The demo cache (`scripts/seed_demo_cache.py`, `.cache/llm/`) was
+re-seeded under the new model string and re-verified to still run
+`scripts/demo.py` fully offline with zero real calls (cache entry count
+unchanged at 10 after re-seeding, confirming no stray live call
+happened during the re-seed's own sanity check).
+
 ## Stage A: ALL-CAPS fallback bake-off (pre-registered rule, mechanical)
 
 Rule: pick Variant B only if, on dev, it (1) lowers the under-20%-fill

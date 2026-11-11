@@ -129,7 +129,11 @@ class GeminiProvider(LLMProvider):
     scripts/demo.py relies on."""
 
     name = "gemini"
-    default_model = "gemini-2.0-flash"
+    # Verified live against this key's actual model list (Stage I preflight,
+    # 2026-11-11) -- do NOT hardcode a Flash name from memory; older Flash
+    # names get deprecated for new keys. See DECISIONS.md for the full list
+    # that was offered and why this one was picked.
+    default_model = "gemini-3.8-flash"
 
     def __init__(self, api_key: Optional[str] = None):
         self._api_key = api_key

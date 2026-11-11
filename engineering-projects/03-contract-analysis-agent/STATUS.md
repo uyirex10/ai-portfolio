@@ -1,6 +1,14 @@
 # Status
 
-Last updated: 2026-11-10. **All stages (A-H) complete.** 101/101 tests passing.
+Last updated: 2026-11-11. **Stage I in progress: live run with a real Gemini key.**
+101/101 tests passing.
+
+## Stage I progress
+- Step 0 (preflight) DONE: real key confirmed working, live model list
+  fetched (27 models), `gemini-3.8-flash` picked and verified with a
+  real call. See DECISIONS.md. Demo cache re-seeded under the new
+  model string; `scripts/demo.py` reconfirmed fully offline.
+- Step 1 (clause-type amendment): IN PROGRESS.
 
 ## Final results table (real numbers only)
 
