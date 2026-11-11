@@ -46,10 +46,10 @@
       "redline_is_suggestion": true
     },
     {
-      "rule_id": "agreement_date_present",
-      "clause_type": "Agreement Date",
+      "rule_id": "post_termination_services_present",
+      "clause_type": "Post-Termination Services",
       "verdict": "amber",
-      "reason": "No agreement date found, or the extracted date could not be grounded.",
+      "reason": "No post-termination services clause found -- obligations after termination (wind-down, transition, IP transfer) are undetermined.",
       "quote": "",
       "quote_start": 0,
       "quote_end": 0,

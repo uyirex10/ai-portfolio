@@ -56,11 +56,14 @@ rules:
       preferred_jurisdictions: ["Delaware", "New York"]
     amber_if: "jurisdiction is null (ungrounded) OR jurisdiction not in preferred_jurisdictions"
 
-  - id: agreement_date_present
-    clause_type: "Agreement Date"
-    description: "An agreement date should be identifiable for recordkeeping."
+  - id: post_termination_services_present
+    clause_type: "Post-Termination Services"
+    description: >
+      Obligations after termination (wind-down, transition services, IP
+      transfer, last-buy) should be identifiable; absence is a
+      demo-level amber, not a hard red.
     missing_verdict: amber
-    missing_reason: "No agreement date found or extracted date was not grounded in the clause text."
+    missing_reason: "No post-termination services clause found -- obligations after termination are undetermined."
     params: {}
 
   - id: effective_date_present

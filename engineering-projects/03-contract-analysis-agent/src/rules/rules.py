@@ -65,11 +65,11 @@ def _rule_governing_law(ci, params) -> Tuple[str, str]:
     return "green", f"Governing law ({ci.jurisdiction}) is on the preferred jurisdiction list."
 
 
-@register("agreement_date_present")
-def _rule_agreement_date(ci, params) -> Tuple[str, str]:
-    if not ci.present or ci.date is None:
-        return "amber", "No agreement date found, or the extracted date could not be grounded."
-    return "green", "Agreement date present and grounded."
+@register("post_termination_services_present")
+def _rule_post_termination_services(ci, params) -> Tuple[str, str]:
+    if not ci.present:
+        return "amber", "No post-termination services clause found -- obligations after termination (wind-down, transition, IP transfer) are undetermined."
+    return "green", "Post-termination services clause present."
 
 
 @register("effective_date_present")

@@ -35,14 +35,14 @@
       "redline_is_suggestion": true
     },
     {
-      "rule_id": "agreement_date_present",
-      "clause_type": "Agreement Date",
+      "rule_id": "post_termination_services_present",
+      "clause_type": "Post-Termination Services",
       "verdict": "amber",
-      "reason": "No agreement date found, or the extracted date could not be grounded.",
-      "quote": "effective as of, August __, 2019",
-      "quote_start": 81,
-      "quote_end": 113,
-      "redline_suggestion": "Fill in the blank day in the preamble (\"August __, 2019\") with the actual execution date.",
+      "reason": "No post-termination services clause found -- obligations after termination (wind-down, transition, IP transfer) are undetermined.",
+      "quote": "",
+      "quote_start": 0,
+      "quote_end": 0,
+      "redline_suggestion": "Add a clause of this type -- there is nothing in the document to redline against, since none currently exists.",
       "redline_is_suggestion": true
     },
     {

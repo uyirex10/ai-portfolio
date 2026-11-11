@@ -34,6 +34,43 @@ re-seeded under the new model string and re-verified to still run
 unchanged at 10 after re-seeding, confirming no stray live call
 happened during the re-seed's own sanity check).
 
+## Stage I, step 1: clause-type amendment (Agreement Date -> Post-Termination Services)
+
+**Reason:** Stage G found Agreement Date's gold support is exactly 0
+on both dev and test under the 50%-overlap rule -- its labeled spans
+(13-26 chars) are always embedded inside a much larger preamble clause
+(100-1900+ chars; measured overlaps 0.009-0.164), so it cannot be
+evaluated at all. Not a bug, a structural property of that category's
+span shape (see the original finding in `reports/error_analysis_dev.md`).
+
+**Replacement rule applied:** next category in the original Stage C
+ranking (by frequency among value-carrying, >=15%-frequency
+categories, excluding pure metadata -- Document Name, Parties,
+Agreement Date) with gold support > 0 on dev. That is
+**Post-Termination Services** (35.7% frequency; the next-ranked
+candidate after the four already-chosen fill slots). Verified (not
+assumed): dev support = 54, test support = 60, both computed the same
+way as every other category, no LLM involved.
+
+**Final 8 clause types** (label counts only -- no model results used
+anywhere in this table):
+
+| Clause type | Frequency (of 510) | Dev gold support | Test gold support | Value the rule compares |
+|---|---|---|---|---|
+| Cap On Liability | 53.9% (275) | 95 | 108 | `amount` vs. a $50,000 placeholder threshold |
+| Termination For Convenience | 35.9% (183) | 39 | 35 | presence only |
+| Notice Period To Terminate Renewal | 21.8% (111) | 39 | 34 | `notice_days` vs. a 30-day placeholder minimum |
+| Governing Law | 85.7% (437) | 56 | 66 | `jurisdiction` vs. a preferred-list placeholder (Delaware, New York) |
+| Post-Termination Services | 35.7% (182) | 54 | 60 | presence only |
+| Expiration Date | 81.0% (413) | 98 | 97 | `date` presence/groundedness |
+| Effective Date | 76.5% (390) | 15 | 13 | `date` presence/groundedness |
+| Audit Rights | 42.0% (214) | 58 | 38 | presence only |
+
+Code changed to match: `src/llm/schemas.py` (`CLAUSE_TYPES`),
+`src/rules/rules.py` (new `post_termination_services_present` rule,
+replacing `agreement_date_present`), `playbook.yaml`, `tests/test_rules.py`,
+`scripts/seed_demo_cache.py` (demo cache re-seeded accordingly).
+
 ## Stage A: ALL-CAPS fallback bake-off (pre-registered rule, mechanical)
 
 Rule: pick Variant B only if, on dev, it (1) lowers the under-20%-fill

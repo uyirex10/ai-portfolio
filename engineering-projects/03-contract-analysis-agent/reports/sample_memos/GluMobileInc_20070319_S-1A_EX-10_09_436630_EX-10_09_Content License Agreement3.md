@@ -43,9 +43,9 @@ Add a clause of this type -- there is nothing in the document to redline against
 
 Add a clause of this type -- there is nothing in the document to redline against, since none currently exists.
 
-## Agreement Date -- AMBER (agreement_date_present)
+## Post-Termination Services -- AMBER (post_termination_services_present)
 
-**Reason:** No agreement date found, or the extracted date could not be grounded.
+**Reason:** No post-termination services clause found -- obligations after termination (wind-down, transition, IP transfer) are undetermined.
 
 **Quoted evidence:** none -- no clause of this type was found in the document.
 

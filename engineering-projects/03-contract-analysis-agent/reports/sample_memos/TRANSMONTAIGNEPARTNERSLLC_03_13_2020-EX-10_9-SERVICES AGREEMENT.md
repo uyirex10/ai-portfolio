@@ -35,16 +35,15 @@ Add a clause of this type -- there is nothing in the document to redline against
 
 If Delaware or New York law is preferred, revise Section 2.1 to read: "This Agreement shall be subject to and governed by the laws of the State of Delaware..."
 
-## Agreement Date -- AMBER (agreement_date_present)
+## Post-Termination Services -- AMBER (post_termination_services_present)
 
-**Reason:** No agreement date found, or the extracted date could not be grounded.
+**Reason:** No post-termination services clause found -- obligations after termination (wind-down, transition, IP transfer) are undetermined.
 
-**Quoted evidence** (source offsets 81-113):
-> effective as of, August __, 2019
+**Quoted evidence:** none -- no clause of this type was found in the document.
 
 **Suggested redline (LLM suggestion, not reviewed by counsel):**
 
-Fill in the blank day in the preamble ("August __, 2019") with the actual execution date.
+Add a clause of this type -- there is nothing in the document to redline against, since none currently exists.
 
 ## Effective Date -- AMBER (effective_date_present)
 

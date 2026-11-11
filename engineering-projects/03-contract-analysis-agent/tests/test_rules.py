@@ -97,7 +97,7 @@ def test_governing_law_non_preferred_is_amber():
 @pytest.mark.parametrize("rule_id,expected_missing", [
     ("termination_for_convenience_present", Verdict.AMBER),
     ("audit_rights_present", Verdict.AMBER),
-    ("agreement_date_present", Verdict.AMBER),
+    ("post_termination_services_present", Verdict.AMBER),
     ("effective_date_present", Verdict.AMBER),
     ("expiration_date_present", Verdict.RED),
 ])
@@ -107,20 +107,20 @@ def test_presence_only_rules_missing_verdict(rule_id, expected_missing):
 
 
 @pytest.mark.parametrize("rule_id", [
-    "termination_for_convenience_present", "audit_rights_present",
+    "termination_for_convenience_present", "audit_rights_present", "post_termination_services_present",
 ])
 def test_presence_only_rules_present_is_green(rule_id):
     ci = ClauseInput(present=True)
     assert _result(rule_id, ci).verdict == Verdict.GREEN
 
 
-@pytest.mark.parametrize("rule_id", ["agreement_date_present", "effective_date_present", "expiration_date_present"])
+@pytest.mark.parametrize("rule_id", ["effective_date_present", "expiration_date_present"])
 def test_date_rules_present_but_ungrounded_date_is_not_green(rule_id):
     ci = ClauseInput(present=True, date=None)
     assert _result(rule_id, ci).verdict != Verdict.GREEN
 
 
-@pytest.mark.parametrize("rule_id", ["agreement_date_present", "effective_date_present", "expiration_date_present"])
+@pytest.mark.parametrize("rule_id", ["effective_date_present", "expiration_date_present"])
 def test_date_rules_present_and_grounded_is_green(rule_id):
     ci = ClauseInput(present=True, date="2024-01-01")
     assert _result(rule_id, ci).verdict == Verdict.GREEN
@@ -162,6 +162,7 @@ def test_property_none_or_absent_input_never_yields_green(rule_id, present):
     else:
         # Present but every extracted value is None: only the two pure
         # presence-only rules (no value field to check) may be green.
-        presence_only = {"termination_for_convenience_present", "audit_rights_present"}
+        presence_only = {"termination_for_convenience_present", "audit_rights_present",
+                          "post_termination_services_present"}
         if rule_id not in presence_only:
             assert result.verdict != Verdict.GREEN, f"{rule_id} returned green with every value field None"

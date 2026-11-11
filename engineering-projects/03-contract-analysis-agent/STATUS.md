@@ -8,7 +8,13 @@ Last updated: 2026-11-11. **Stage I in progress: live run with a real Gemini key
   fetched (27 models), `gemini-3.8-flash` picked and verified with a
   real call. See DECISIONS.md. Demo cache re-seeded under the new
   model string; `scripts/demo.py` reconfirmed fully offline.
-- Step 1 (clause-type amendment): IN PROGRESS.
+- Step 1 (clause-type amendment) DONE: Agreement Date (gold support 0,
+  cannot be evaluated) replaced with Post-Termination Services (dev
+  support 54, test support 60), the next category in the original
+  Stage C ranking. Final 8 types + dev/test support + rule-compared
+  value table in DECISIONS.md. Code updated to match (schemas.py,
+  rules.py, playbook.yaml, tests, demo cache re-seeded).
+- Step 2 (smoke test, 3 dev contracts, real model): NEXT.
 
 ## Final results table (real numbers only)
 

@@ -62,7 +62,7 @@ def seed_transmontaigne(leaves):
         elif c.heading == "Termination of Agreement":
             all_labels[cid] = ["Termination For Convenience"]
         elif c.heading == "SERVICES AGREEMENT":
-            all_labels[cid] = ["Agreement Date", "Effective Date"]
+            all_labels[cid] = ["Effective Date"]
 
     pairs = [(cid, c.text) for cid, c in by_id.items()]
     batches = batch_by_char_budget(pairs, text_of=lambda p: p[1])
@@ -88,15 +88,9 @@ def seed_transmontaigne(leaves):
          "evidence": "by either Party upon 5 days written\nnotice to the other Party"},
     )
 
-    date_id = next(cid for cid, l in all_labels.items() if l == ["Agreement Date", "Effective Date"])
+    date_id = next(cid for cid, l in all_labels.items() if l == ["Effective Date"])
     # The source literally has a blank day ("August __, 2019") -- an honest
     # extractor declines to fabricate a complete date rather than guess one.
-    seed(
-        build_extraction_prompt("Agreement Date", by_id[date_id].text),
-        {"amount": None, "currency": None, "duration_value": None, "duration_unit": None,
-         "notice_days": None, "jurisdiction": None, "date": None,
-         "evidence": "effective as of, August __, 2019"},
-    )
     seed(
         build_extraction_prompt("Effective Date", by_id[date_id].text),
         {"amount": None, "currency": None, "duration_value": None, "duration_unit": None,
@@ -126,19 +120,17 @@ def seed_transmontaigne(leaves):
             "If Delaware or New York law is preferred, revise Section 2.1 to read: \"This Agreement shall "
             "be subject to and governed by the laws of the State of Delaware...\""
         ),
-        ("Agreement Date", "amber"): "Fill in the blank day in the preamble (\"August __, 2019\") with the actual execution date.",
         ("Effective Date", "amber"): "Fill in the blank day in the preamble (\"August __, 2019\") with the actual effective date.",
     }
     for (clause_type, verdict), redline_text in redlines.items():
         if clause_type == "Governing Law":
             clause_text = by_id[gov_id].text
-        elif clause_type in ("Agreement Date", "Effective Date"):
+        elif clause_type == "Effective Date":
             clause_text = by_id[date_id].text
         else:
             continue  # missing-clause findings have no clause text to build a redline prompt against
         reason = {
             "Governing Law": "Governing law (Colorado) is not on the preferred jurisdiction list (['Delaware', 'New York']).",
-            "Agreement Date": "No agreement date found, or the extracted date could not be grounded.",
             "Effective Date": "No effective date found, or the extracted date could not be grounded.",
         }[clause_type]
         seed(build_redline_prompt(clause_type, clause_text, verdict, reason), redline_text)

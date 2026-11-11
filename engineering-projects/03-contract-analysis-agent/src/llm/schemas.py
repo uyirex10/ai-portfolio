@@ -1,7 +1,12 @@
 """Pydantic schemas for clause classification and value extraction.
 
 Stage C's 8 chosen clause types, exact category names from the CUAD
-data (see DECISIONS.md).
+data (see DECISIONS.md). Amended in Stage I step 1: Agreement Date was
+dropped (gold support of 0 under the 50% overlap rule -- its spans are
+always buried too deep in a large preamble clause to ever reach 50%
+overlap, independent of classifier quality) and replaced with
+Post-Termination Services, the next category in the original Stage C
+ranking.
 """
 
 from __future__ import annotations
@@ -15,7 +20,7 @@ CLAUSE_TYPES = [
     "Termination For Convenience",
     "Notice Period To Terminate Renewal",
     "Governing Law",
-    "Agreement Date",
+    "Post-Termination Services",
     "Expiration Date",
     "Effective Date",
     "Audit Rights",
